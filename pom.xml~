@@ -15,7 +15,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>cora</groupId>
+            <groupId>org.cora.maths</groupId>
             <artifactId>cora-maths</artifactId>
             <version>1.0</version>
         </dependency>

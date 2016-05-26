@@ -10,4 +10,5 @@
             <port>3128</port>
         </proxy>
     </proxies>
+
 </settings>

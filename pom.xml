@@ -24,7 +24,7 @@
     <repositories>
 	    <repository>
 	        <id>cora-maths</id>
-	        <url>https://127.0.0.1/ronan/coraMaths/raw/master</url>
+	        <url>https://gitlab.univ-nantes.fr/ronan/coraMaths/raw/master</url>
 	    </repository>
     </repositories>
     

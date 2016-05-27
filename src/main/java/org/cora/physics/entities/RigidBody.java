@@ -2,6 +2,9 @@ package org.cora.physics.entities;
 
 import org.cora.maths.Vector2D;
 
+/**
+ * Rigid body is a complex physic element with rotation
+ */
 public class RigidBody extends Particle
 {
     private final static float dampingRotation = 0.95f;

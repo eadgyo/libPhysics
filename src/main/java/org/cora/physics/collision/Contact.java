@@ -6,6 +6,9 @@ import org.cora.physics.entities.RigidBody;
 import org.cora.maths.FloatA;
 import org.cora.maths.Vector2D;
 
+/**
+ * Class holding collision data of two objects
+ */
 public class Contact
 {
     private Particle A, B;

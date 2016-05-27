@@ -7,6 +7,9 @@ import java.util.Map.Entry;
 
 import org.cora.physics.entities.Particle;
 
+/**
+ * Registry that holds force applied on element
+ */
 public class ForceRegistry
 {
     private class Registration

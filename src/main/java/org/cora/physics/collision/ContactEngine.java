@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 import org.cora.physics.entities.Particle;
 
+/**
+ * Engine that handle and resolve objects collisions
+ */
 public class ContactEngine
 {
     private ArrayList<Particle> elements;

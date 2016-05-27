@@ -1,5 +1,8 @@
 package org.cora.physics.collision;
 
+/**
+ * Store contact behavior data
+ */
 public class ContactInformation
 {
     public float coefRestitution;

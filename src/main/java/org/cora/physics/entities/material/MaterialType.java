@@ -4,7 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.cora.physics.collision.ContactInformation;
-
+/**
+ * Material that define contact behavior
+ * Exemple: Collision between wood and glass
+ */
 public class MaterialType
 {
     private Map<MaterialType, ContactInformation> collisionMaterials;
@@ -13,7 +16,12 @@ public class MaterialType
     {
         collisionMaterials = new HashMap<MaterialType, ContactInformation>();
     }
-    
+
+    /**
+     * Get information related to a material
+     * @param material colliding material
+     * @return information or null if not material not present
+     */
     public ContactInformation getMaterialInformation(MaterialType material)
     {
         return collisionMaterials.get(material);
@@ -23,7 +31,12 @@ public class MaterialType
     {
         return collisionMaterials.containsKey(material);
     }
-    
+
+    /**
+     *
+     * @param material other materialType
+     * @param information behavior information
+     */
     public void addMaterialInformation(MaterialType material, ContactInformation information)
     {
         collisionMaterials.put(material, information);
@@ -31,7 +44,10 @@ public class MaterialType
         if (this != material)
             material.addMaterialInformationFree(this, information);
     }
-    
+
+    /**
+     * Do not use
+     */
     public void addMaterialInformationFree(MaterialType material, ContactInformation information)
     {
         collisionMaterials.put(material, information);
@@ -42,7 +58,12 @@ public class MaterialType
         ContactInformation information = new ContactInformation(coefRestitution, coefFriction, sep);
         addMaterialInformation(material, information);
     }
-    
+
+    /**
+     * Remove information linked to a material type
+     * @param material linked material
+     * @return information
+     */
     public ContactInformation removeMaterialInformation(MaterialType material)
     {
         if (this == material)
@@ -51,7 +72,10 @@ public class MaterialType
         collisionMaterials.remove(material);
         return removeMaterialInformationFree(this);
     }
-    
+
+    /**
+     * Do not use
+     */
     public ContactInformation removeMaterialInformationFree(MaterialType material)
     {
         return collisionMaterials.remove(material);

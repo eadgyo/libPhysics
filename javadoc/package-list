@@ -1,0 +1,6 @@
+org.cora.physics.Engine
+org.cora.physics.collision
+org.cora.physics.entities
+org.cora.physics.entities.material
+org.cora.physics.force
+org.cora.physics.test

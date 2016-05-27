@@ -5,6 +5,9 @@ import org.cora.maths.Vector2D;
 import org.cora.physics.collision.ContactInformation;
 import org.cora.physics.entities.material.MaterialType;
 
+/**
+ * Particle is a physic element with no rotation
+ */
 public class Particle implements Cloneable
 {
     protected boolean            isAwake;
@@ -47,6 +50,9 @@ public class Particle implements Cloneable
             setForm((Form) p.getForm().clone());
     }
 
+    /**
+     * Init physics data like inertia
+     */
     public void initPhysics()
     {
 

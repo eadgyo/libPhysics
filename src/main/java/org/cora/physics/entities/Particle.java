@@ -96,7 +96,7 @@ public class Particle implements Cloneable
     
     public ContactInformation getContactInformation(Particle B)
     {
-        return materialType.getMaterialInformation(B.getMaterialType());
+        return (materialType == null || B.getMaterialType() == null) ? null : materialType.getMaterialInformation(B.getMaterialType());
     }
 
     public MaterialType getMaterialType()

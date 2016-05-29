@@ -44,11 +44,42 @@ public class ContactEngine
         }
     }
 
+    public void findAndResolveContacts(float dt)
+    {
+        contacts.clear();
+        Particle A, B;
+        boolean isCollision = true;
+
+        int test = 0;
+
+        while (isCollision && test < elements.size() * 2)
+        {
+            isCollision = false;
+            for (int i = 0; i < elements.size() - 1; i++)
+            {
+                A = elements.get(i);
+                for (int j = i + 1; j < elements.size(); j++)
+                {
+                    B = elements.get(j);
+                    ContactGenerator.generateContacts(A, B, contacts, dt);
+                    for (int w = 0; w < contacts.size(); w++)
+                    {
+                        contacts.get(w).resolve(dt);
+                        isCollision = true;
+                    }
+                    contacts.clear();
+                }
+            }
+            test++;
+        }
+    }
+
     public void update(float dt)
     {
         //resolveAllContactsDebug(dt);
-        findContacts(dt);
-        ContactResolver.resolveContacts(contacts, dt);
+        //findContacts(dt);
+        //ContactResolver.resolveContacts(contacts, dt);
+        findAndResolveContacts(dt);
     }
 
     public void resolveAllContactsDebug(float dt)

@@ -1,8 +1,8 @@
 package org.cora.physics.collision;
 
-import java.util.ArrayList;
-
 import org.cora.maths.Vector2D;
+
+import java.util.ArrayList;
 
 public class ContactResolver
 {
@@ -27,21 +27,23 @@ public class ContactResolver
         int iterations = c.size() * 2;
 
         int i, index;
-        Vector2D linearChange[];
-        Vector2D deltaPosition;
+        Vector2D linearChange[] = new Vector2D[]{new Vector2D(), new Vector2D()};
+        float angularChange[] = new float[]{0, 0};
         float max;
-        
-        for (i = 0; i < c.size(); i++)
+
+
+        /*for (i = 0; i < c.size(); i++)
         {
-            c.get(i).resolvePenetration(dt);
-        }
-        
+            if (c.get(i).getPenetration() < 0)
+                c.get(i).resolvePenetration();
+        }*/
+
         // Init
         while (iterationsUsed < iterations)
         {
             max = -Float.MAX_VALUE;
             index = c.size();
-            
+
             // Find biggest penetration
             for (i = 0; i < c.size(); i++)
             {
@@ -56,27 +58,32 @@ public class ContactResolver
             if (index == c.size())
                 break;
 
-            linearChange = c.get(index).resolvePenetration(dt);
+            linearChange = c.get(index).resolvePenetration();
+
+            //c.get(index).applyPositionChange(linearChange, angularChange);
 
             for (i = 0; i < c.size(); i++)
             {
                 for (int b = 0; b < 2; b++)
                 {
-                    if (c.get(i).get(b) != null)
+                    for (int d = 0; d < 2; d++)
                     {
-                        for (int d = 0; d < 2; d++)
+                        if (c.get(i).get(b) == c.get(index).get(d))
                         {
-                            if (c.get(i).get(b) == c.get(index).get(d))
-                            {
-                                deltaPosition = linearChange[d];
-                                c.get(i).setPenetration(c.get(i).getPenetration() + 
-                                        deltaPosition.scalarProduct(c.get(i).getContactNormal()));
-                            }
+                            Vector2D deltaPosition = new Vector2D(-angularChange[d] * c.get(i).getRPY(b),
+                                    angularChange[d] * c.get(i).getRPX(b));
+
+                            deltaPosition.selfAdd(linearChange[d]);
+
+                            c.get(i).setPenetration(c.get(i).getPenetration() +
+                                    deltaPosition.scalarProduct(c.get(i).getContactNormal()) * (b != 0 ? 1 : -1));
                         }
                     }
                 }
+
             }
             iterationsUsed++;
         }
+
     }
 }

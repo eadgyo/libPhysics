@@ -1,8 +1,9 @@
 package org.cora.physics.collision;
 
-import java.util.ArrayList;
-
 import org.cora.physics.entities.Particle;
+import org.cora.physics.entities.RigidBody;
+
+import java.util.ArrayList;
 
 /**
  * Engine that handle and resolve objects collisions
@@ -45,7 +46,24 @@ public class ContactEngine
 
     public void update(float dt)
     {
+        //resolveAllContactsDebug(dt);
         findContacts(dt);
         ContactResolver.resolveContacts(contacts, dt);
+    }
+
+    public void resolveAllContactsDebug(float dt)
+    {
+        Particle A, B;
+        for (int i = 0; i < elements.size() - 1; i++)
+        {
+            A = elements.get(i);
+            for (int j = i + 1; j < elements.size(); j++)
+            {
+                RigidBody rA = (RigidBody) A;
+                RigidBody rB = (RigidBody) elements.get(j);
+
+                ContactTest.testCollision(rA, rB, dt);
+            }
+        }
     }
 }

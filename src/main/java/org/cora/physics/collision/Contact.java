@@ -17,6 +17,7 @@ public class Contact
     private float    coefFriction;
     private Vector2D contactNormal;
     private Vector2D CA, CB;
+    private Vector2D rP[];
     private float    sep;
 
     public Contact(Particle A, Particle B)
@@ -36,6 +37,7 @@ public class Contact
         this.sep = sep;
         CA = new Vector2D();
         CB = new Vector2D();
+        rP = new Vector2D[] { new Vector2D(), new Vector2D() };
         contactNormal = new Vector2D();
         this.A = A;
         this.B = B;
@@ -112,8 +114,8 @@ public class Contact
 
     public void setC(Vector2D CA, Vector2D CB)
     {
-        this.CA.set(CA);
-        this.CB.set(CB);
+        setCA(CA);
+        setCB(CB);
     }
 
     public Vector2D getCA()
@@ -124,6 +126,7 @@ public class Contact
     public void setCA(Vector2D cA)
     {
         CA = cA;
+        rP[0].set(CA.sub(A.getPosition()));
     }
 
     public Vector2D getCB()
@@ -134,6 +137,22 @@ public class Contact
     public void setCB(Vector2D cB)
     {
         CB = cB;
+        rP[1].set(CB.sub(B.getPosition()));
+    }
+
+    public Vector2D getRelativePenetration(int i)
+    {
+        return rP[i];
+    }
+
+    public float getRPX(int i)
+    {
+        return rP[i].x;
+    }
+
+    public float getRPY(int i)
+    {
+        return rP[i].y;
     }
 
     public float getSep()
@@ -160,7 +179,7 @@ public class Contact
 
     public void resolve(float dt)
     {
-        resolvePenetration(dt);
+        resolvePenetration();
         resolveVelocity(dt);
     }
 
@@ -170,7 +189,6 @@ public class Contact
          * Calcul de j
          */
 
-        contactNormal.normalize();
         float tColl = (penetration > 0f) ? penetration : 0f;
 
         Vector2D PA = A.getPosition();
@@ -195,7 +213,7 @@ public class Contact
         Vector2D VPB = VB.sub(TB.multiply(-rotB));
 
         Vector2D relVel = VPB.sub(VPA);
-        FloatA vAcc = new FloatA(0);
+        FloatA vAcc = new FloatA();
 
         float vn = desiredVel(relVel, vAcc, dt);
 
@@ -234,8 +252,8 @@ public class Contact
         float jn = (vn - vAcc.v) / denom;
 
         J = contactNormal.multiply(vAcc.v + ((1f + coefRestitution) * -jn));
-        // Dynamic friction
 
+        // Dynamic friction
         J.selfAdd(Vt.multiply((coefFriction * jn)));
 
         Vector2D VA1 = VA.add(J.multiply(-A.getInverseMass()));
@@ -260,7 +278,7 @@ public class Contact
         if (coefFriction > 0.0f && vt > vn * coefFriction)
         {
             Contact frictionContact = new Contact(A, B, coefFriction, -1);
-            frictionContact.setContactNormal(Vt);
+            frictionContact.setContactNormal(contactNormal);
             frictionContact.setPenetration(0);
             frictionContact.setC(CA, CB);
 
@@ -268,7 +286,94 @@ public class Contact
         }
     }
 
-    public Vector2D[] resolvePenetration(float dt)
+    public void applyPositionChange(Vector2D linearChange[], float angularChange[])
+    {
+        float angularLimit = 0.2f;
+        float angularMove[] = new float[2];
+        float linearMove[] = new float[2];
+
+        float totalInertia = 0;
+        float linearInertia[] = new float[2];
+        float angularInertia[] = new float[2];
+
+        Particle p[] = new Particle[] { A, B };
+        RigidBody rA = (RigidBody) A;
+        RigidBody rB = (RigidBody) B;
+        RigidBody r[] = new RigidBody[] { rA, rB };
+
+        for (int i = 0; i < 2; i++)
+        {
+            angularInertia[i] = 0;
+            if (r[i] != null)
+            {
+                angularInertia[i] = (rP[i].crossProductZ(contactNormal))
+                        * (rP[i].crossProductZ(contactNormal))
+                        * r[i].getInverseInertia();
+            }
+
+            linearInertia[i] = p[i].getInverseMass();
+
+            totalInertia += linearInertia[i] + angularInertia[i];
+        }
+
+        for (int i = 0; i < 2; i++)
+        {
+            float sign = (i == 0) ? 1 : -1;
+
+            angularMove[i] = sign * penetration * (angularInertia[i] / totalInertia);
+            linearMove[i] = sign * penetration * (linearInertia[i] / totalInertia);
+
+            // Limit the angular move
+            Vector2D projection = rP[i].addScaledVector(contactNormal, -(rP[i].scalarProduct(contactNormal)));
+
+            float maxMagnitude = angularLimit * projection.getMagnitude();
+
+            if (angularMove[i] < - maxMagnitude)
+            {
+                float totalMove = angularMove[i] + linearMove[i];
+                angularMove[i] = -maxMagnitude;
+                linearMove[i] = totalMove - angularMove[i];
+            }
+            else if (angularMove[i] > maxMagnitude)
+            {
+                float totalMove = angularMove[i] + linearMove[i];
+                angularMove[i] = maxMagnitude;
+                linearMove[i] = totalMove - angularMove[i];
+            }
+
+            if (angularMove[i] == 0)
+            {
+                angularChange[i] = 0;
+            }
+            else
+            {
+                float targetAngularDirection = rP[i].crossProductZ(contactNormal);
+
+                float inverseInertiaTensor = 0;
+                if (r[i] != null)
+                {
+                    inverseInertiaTensor = r[i].getInverseInertia();
+                }
+
+                angularChange[i] = inverseInertiaTensor * targetAngularDirection*(angularMove[i] / angularInertia[i]);
+            }
+
+            linearChange[i].set(contactNormal.multiply(linearMove[i]));
+
+            Vector2D pos = p[i].getPosition().addScaledVector(contactNormal, linearMove[i]);
+            p[i].setPosition(pos);
+
+            if (r[i] != null)
+            {
+                float rad = r[i].getOrientation();
+                rad += angularChange[i];
+                r[i].setOrientation(rad);
+            }
+        }
+
+    }
+
+    public Vector2D[] resolvePenetration()
     {
         float iMassA = A.getInverseMass();
         float iMassB = B.getInverseMass();

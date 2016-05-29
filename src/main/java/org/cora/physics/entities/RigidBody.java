@@ -128,4 +128,8 @@ public class RigidBody extends Particle
     {
         this.rotation = rotation;
     }
+
+    public float getOrientation() { return form.getOmega(); };
+
+    public void setOrientation(float rad) { form.setRadians(rad);}
 }

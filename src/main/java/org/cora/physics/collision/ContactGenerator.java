@@ -1,15 +1,10 @@
 package org.cora.physics.collision;
 
-import java.util.ArrayList;
-
-import org.cora.maths.Circle;
-import org.cora.maths.FloatA;
-import org.cora.maths.Form;
-import org.cora.maths.Matrix2;
-import org.cora.maths.RoundForm;
-import org.cora.maths.Vector2D;
+import org.cora.maths.*;
 import org.cora.maths.collision.CollisionDetector;
 import org.cora.physics.entities.Particle;
+
+import java.util.ArrayList;
 
 public class ContactGenerator
 {
@@ -90,13 +85,16 @@ public class ContactGenerator
             Contact contact = new Contact(A, B);
             contact.setC(projection, contactsB.get(0));
             contacts.add(contact);
+
         }
         else if (contactsA.size() == 2 && contactsB.size() == 2)
         {
             Vector2D edgeA = new Vector2D(contactsA.get(0), contactsA.get(1));
 
             if (!handleEdgeToEdge(A, B, edgeA, contactsA, contactsB, contacts))
+            {
                 return false;
+            }
         }
         return true;
     }
@@ -126,9 +124,9 @@ public class ContactGenerator
 
         if (min1 > max1)
         {
-            float temp = max0;
-            max0 = min0;
-            min0 = temp;
+            float temp = max1;
+            max1 = min1;
+            min1 = temp;
 
             Vector2D tempB = contactsB.get(0);
             contactsB.set(0, contactsB.get(1));
@@ -242,21 +240,21 @@ public class ContactGenerator
     {
         ArrayList<Vector2D> S = new ArrayList<Vector2D>();
 
-        // Conversion
+        //Conversion
         Matrix2 orientation = A.getOrientation().convertMatrix2();
         Vector2D pushOA = orientation.inverse().multiply(push);
         ArrayList<Float> scalar = new ArrayList<Float>(A.size());
         float dmin;
 
-        // On cherche le point minimum par rapport au vecteur
+        //On cherche le point minimum par rapport au vecteur
         scalar.add(A.getLocal(0).scalarProduct(pushOA));
         dmin = scalar.get(0);
 
-        for (int i = 1; i < A.size(); i++)
+        for(int i=1; i<A.size(); i++)
         {
             scalar.add(A.getLocal(i).scalarProduct(pushOA));
 
-            if (scalar.get(i) < dmin)
+            if(scalar.get(i) < dmin)
             {
                 dmin = scalar.get(i);
             }
@@ -266,24 +264,23 @@ public class ContactGenerator
         ArrayList<Float> s = new ArrayList<Float>(2);
         Vector2D perp = pushOA.getPerpendicular();
 
-        // On regarde s'il y a deux points a peu près au meme niveau
-        for (int i = 0; i < A.size(); i++)
+        //On regarde s'il y a deux points a peu près au meme niveau
+        for(int i=0; i<A.size(); i++)
         {
-            if (scalar.get(i) < dmin + threshold)
+            if(scalar.get(i) < dmin + threshold)
             {
-                Vector2D contact = transform(A.getLocal(i), A.getCenter(), VA,
-                        orientation, t);
+                Vector2D contact = transform(A.getLocal(i), A.getCenter(), VA, orientation, t);
                 float fScalar = contact.scalarProduct(perp);
 
-                // On prend les deux points les plus éloignés
-                if (s.size() < 2)
+                //On prend les deux points les plus éloignés
+                if(s.size() < 2)
                 {
                     s.add(fScalar);
                     S.add(contact);
 
-                    if (s.size() > 1)
+                    if(s.size() > 1)
                     {
-                        if (s.get(0) > s.get(1))
+                        if(s.get(0) > s.get(1))
                         {
                             float temp = s.get(0);
                             s.set(0, s.get(1));
@@ -297,12 +294,12 @@ public class ContactGenerator
                 }
                 else
                 {
-                    if (fScalar < s.get(0)) // < min
+                    if(fScalar < s.get(0)) //< min
                     {
                         s.set(0, fScalar);
                         S.set(0, contact);
                     }
-                    else if (fScalar > s.get(1)) // > max
+                    else if(fScalar > s.get(1)) //> max
                     {
                         s.set(1, fScalar);
                         S.set(1, contact);

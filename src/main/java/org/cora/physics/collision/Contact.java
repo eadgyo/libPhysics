@@ -22,12 +22,12 @@ public class Contact
 
     public Contact(Particle A, Particle B)
     {
-        this(A, B, 0.3f, 0.5f);
+        this(A, B, 0.0f, 0.5f);
     }
     
     public Contact(Particle A, Particle B, float coefRestitution, float coefFriction)
     {
-        this(A, B, coefRestitution, coefFriction, 1.0f);
+        this(A, B, coefRestitution, coefFriction, 0.8f);
     }
     
     public Contact(Particle A, Particle B, float coefRestitution, float coefFriction, float sep)
@@ -188,7 +188,6 @@ public class Contact
         /*
          * Calcul de j
          */
-
         float tColl = (penetration > 0f) ? penetration : 0f;
 
         Vector2D PA = A.getPosition();
@@ -212,14 +211,11 @@ public class Contact
         Vector2D VPA = VA.sub(TA.multiply(-rotA));
         Vector2D VPB = VB.sub(TB.multiply(-rotB));
 
+        FloatA vAcc = new FloatA(0);
+
         Vector2D relVel = VPB.sub(VPA);
-        FloatA vAcc = new FloatA();
-
-        float vn = desiredVel(relVel, vAcc, dt);
-
-        Vector2D N = contactNormal.getPerpendicular();
-        float vt = N.scalarProduct(relVel);
-        Vector2D Vt = N.multiply((vt < 0) ? -1 : 1);
+        float vn = contactNormal.scalarProduct(relVel);
+        Vector2D Vn = contactNormal.multiply(vn);
 
         if (vn > 0.0f)
         {
@@ -228,7 +224,10 @@ public class Contact
             return;
         }
 
-        Vector2D J;
+        Vector2D Vt = relVel.sub(Vn);
+        float vt = Vt.normalize();
+
+        Vector2D J, Jn, Jt;
         float t0 = 0;
         float t1 = 0;
 
@@ -249,13 +248,21 @@ public class Contact
         float m = A.getInverseMass() + B.getInverseMass();
 
         float denom = m + t0 + t1;
-        float jn = (vn - vAcc.v) / denom;
+        float jn = vn / denom;
 
-        J = contactNormal.multiply(vAcc.v + ((1f + coefRestitution) * -jn));
+
+        Jn = contactNormal.multiply(-((1.0f + coefRestitution) * jn));
+        if (coefFriction > 0)
+        {
+            Jt = Vt.multiply(coefFriction * jn);
+            J = Jn.add(Jt);
+        }
+        else
+        {
+            J = Jn;
+        }
 
         // Dynamic friction
-        J.selfAdd(Vt.multiply((coefFriction * jn)));
-
         Vector2D VA1 = VA.add(J.multiply(-A.getInverseMass()));
         Vector2D VB1 = VB.add(J.multiply(B.getInverseMass()));
         A.setVelocity(VA1);
@@ -275,14 +282,19 @@ public class Contact
         }
 
         // Static friction
-        if (coefFriction > 0.0f && vt > vn * coefFriction)
+        if (coefFriction > 0.0f && vn < 0.0f)
         {
-            Contact frictionContact = new Contact(A, B, coefFriction, -1);
-            frictionContact.setContactNormal(contactNormal);
-            frictionContact.setPenetration(0);
-            frictionContact.setC(CA, CB);
+            float cone = -vt / vn;
 
-            frictionContact.resolveVelocity(dt);
+            if (cone < coefFriction)
+            {
+                Contact frictionContact = new Contact(A, B, coefFriction, 0);
+                frictionContact.setContactNormal(Vt);
+                frictionContact.setPenetration(0);
+                frictionContact.setC(CA, CB);
+
+                frictionContact.resolveVelocity(dt);
+            }
         }
     }
 
@@ -369,6 +381,11 @@ public class Contact
                 rad += angularChange[i];
                 r[i].setOrientation(rad);
             }
+
+            if (angularChange[0] != 0)
+            {
+                int z = 0;
+            }
         }
 
     }
@@ -404,11 +421,6 @@ public class Contact
         return linearChange;
     }
 
-    public float calculateSeparatingVelocity()
-    {
-        return 0;
-    }
-
     public float desiredVel(Vector2D relVel, FloatA vAcc, float dt)
     {
         vAcc.v = -A.getLastAcceleration().scalarProduct(contactNormal) * dt;
@@ -416,10 +428,13 @@ public class Contact
 
         float vn = relVel.scalarProduct(contactNormal);
 
-        if (Math.abs(vn) < 0.25f)
+        if (Math.abs(vn) < 0.50f)
         {
             coefRestitution = 0;
+            relVel.set(0, 0);
         }
+
+
 
         return vn;
     }

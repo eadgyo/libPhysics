@@ -1,7 +1,7 @@
 #!/bin/bash
-mvn install
+mvn clean install
 
-name=$(basename target/*.jar)
+name=$(basename target/*javadoc.jar)
 group=${name%%-*}
 idname=${name%-*}
 version=${name##*-}
@@ -28,5 +28,3 @@ folder="$group/$idname/$version"
 
 cp target/*.jar "$folder"
 cp pom.xml $folder/$idname-$version.pom
-jar -cf $folder/$idname-$version-javadoc.jar -C javadoc .
-jar -cf $folder/$idname-$version-sources.jar -C src/main/java .

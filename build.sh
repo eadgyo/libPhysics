@@ -24,5 +24,9 @@ then
     mkdir "$group/$idname/$version"
 fi
 
-cp target/*.jar "$group/$idname/$version"
-cp pom.xml $group/$idname/$version/$idname-$version.pom
+folder="$group/$idname/$version"
+
+cp target/*.jar "$folder"
+cp pom.xml $folder/$idname-$version.pom
+jar -cf $folder/$idname-$version-javadoc.jar -C javadoc .
+jar -cf $folder/$idname-$version-sources.jar -C src/main/java .

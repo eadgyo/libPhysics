@@ -3,9 +3,11 @@ mvn clean install
 
 name=$(basename target/*javadoc.jar)
 group=${name%%-*}
-idname=${name%-*}
-version=${name##*-}
-version=${version%.*}
+idname=${name#*-}
+idname=${idname%%-*}
+version=${name#*-}
+version=${version#*-}
+version=${version%-*}
 
 echo "Jar in $group/$idname/$version"
 

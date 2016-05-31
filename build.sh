@@ -4,7 +4,7 @@ mvn clean install
 name=$(basename target/*javadoc.jar)
 group=${name%%-*}
 idname=${name#*-}
-idname=group-${idname%%-*}
+idname=$group-${idname%%-*}
 version=${name#*-}
 version=${version#*-}
 version=${version%-*}

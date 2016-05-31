@@ -1,4 +1,7 @@
 #!/bin/bash
 
-./build.sh
-./push.sh $1
+if [ $# -eq 1 ]
+then
+    ./build.sh
+    ./push.sh $1
+fi

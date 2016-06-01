@@ -1,12 +1,13 @@
 package org.cora.physics.Engine;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.cora.physics.collision.ContactEngine;
+import org.cora.physics.collision.ContactGenerator;
 import org.cora.physics.entities.Particle;
 import org.cora.physics.force.ForceGenerator;
 import org.cora.physics.force.ForceRegistry;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Engine that handle objects physics
@@ -117,4 +118,13 @@ public class Engine
     {
         return new HashSet<Particle>(elements);
     }
+
+    /**
+     * Set threshold value to accept side collision
+     * Low threshold will make resting contacts unstable
+     * High thresold will make strange results
+     * @param threshold value used in contacts resolution
+     */
+    public void setThresholdSideDetection(float threshold) {
+        ContactGenerator.THRESHOLD_SIDE_DETECTION = threshold; }
 }

@@ -8,6 +8,8 @@ import java.util.ArrayList;
 
 public class ContactGenerator
 {
+    public static float THRESHOLD_SIDE_DETECTION = 0.1f;
+
     public static boolean generateContacts(Particle A, Particle B,
             ArrayList<Contact> contacts, float dt)
     {
@@ -260,7 +262,7 @@ public class ContactGenerator
             }
         }
 
-        float threshold = 0.1f;
+        float threshold = THRESHOLD_SIDE_DETECTION;
         ArrayList<Float> s = new ArrayList<Float>(2);
         Vector2D perp = pushOA.getPerpendicular();
 

@@ -182,8 +182,8 @@ public class Contact
         Vector2D linearChange[] = new Vector2D[] { new Vector2D(), new Vector2D() };
 
         applyPositionChange(linearChange, angularChange);*/
-        resolvePenetration();
         resolveVelocity(dt);
+        resolvePenetration();
     }
 
     public void resolveVelocity(float dt)
@@ -217,13 +217,15 @@ public class Contact
         FloatA vAcc = new FloatA(0);
 
         Vector2D contactVel = VPB.sub(VPA);
-        float restitution = (contactVel.getMagnitude() < 0.5f) ? 0 : coefRestitution;
+        /*float restitution = (contactVel.getMagnitude() < 0.5f) ? 0 : coefRestitution;
         Vector2D scaledContact = contactNormal.multiply(dt);
         float velocityFromAcc =  B.getLastAcceleration().scalarProduct(scaledContact) - A.getLastAcceleration().scalarProduct(scaledContact);
         float deltaVelocity = contactVel.x - restitution * (contactVel.x - velocityFromAcc);
 
         Vector2D relVel = contactVel;
-        relVel.x = deltaVelocity;
+        relVel.x = deltaVelocity;*/
+
+        Vector2D relVel = contactVel;
 
         float vn = contactNormal.scalarProduct(relVel);
         Vector2D Vn = contactNormal.multiply(vn);

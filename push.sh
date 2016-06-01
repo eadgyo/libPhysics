@@ -1,7 +1,7 @@
 #!/bin/bash
-if [ $# -eq 1 ]
+if [ $# -ge 1 ]
 then
     git add --all
-    git commit -m $1
+    git commit -m "$*"
     git push origin master
 fi

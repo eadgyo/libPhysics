@@ -5,11 +5,16 @@ import org.cora.maths.Vector2D;
 import org.cora.physics.collision.ContactInformation;
 import org.cora.physics.entities.material.MaterialType;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Particle is a physic element with no rotation
  */
 public class Particle implements Cloneable
 {
+    public Set<Particle> contact = new HashSet<Particle>();
+
     protected boolean            isAwake;
     protected final static float damping = 0.999f;
 

@@ -52,6 +52,11 @@ public class ContactEngine
 
         int test = 0;
 
+        for (int i = 0; i < elements.size(); i++)
+        {
+            elements.get(i).contact.clear();
+        }
+
         while (isCollision && test < elements.size() * 2)
         {
             isCollision = false;
@@ -65,6 +70,12 @@ public class ContactEngine
                     for (int w = 0; w < contacts.size(); w++)
                     {
                         contacts.get(w).resolve(dt);
+                        /*
+                        if (!A.contact.contains(B))
+                            contacts.get(w).resolveVelocity(dt);
+                        */
+                        A.contact.add(B);
+                        B.contact.add(A);
                         isCollision = true;
                     }
                     contacts.clear();

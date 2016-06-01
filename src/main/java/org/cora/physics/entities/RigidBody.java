@@ -7,7 +7,7 @@ import org.cora.maths.Vector2D;
  */
 public class RigidBody extends Particle
 {
-    private final static float dampingRotation = 0.95f;
+    private final static float dampingRotation = 0.999f;
     private float              inverseInertia;
     private float              rotation, torqueAccum;
 

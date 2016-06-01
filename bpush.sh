@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ $# -eq 1 ]
+if [ $# -ge 1 ]
 then
     ./build.sh
-    ./push.sh $1
+    ./push.sh $*
 fi

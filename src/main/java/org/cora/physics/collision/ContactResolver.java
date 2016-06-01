@@ -47,8 +47,7 @@ public class ContactResolver
             // Find biggest penetration
             for (i = 0; i < c.size(); i++)
             {
-                if (c.get(i).getPenetration() < 0
-                        && c.get(i).getPenetration() > max)
+                if (c.get(i).getPenetration() > max)
                 {
                     max = c.get(i).getPenetration();
                     index = i;
@@ -58,9 +57,11 @@ public class ContactResolver
             if (index == c.size())
                 break;
 
-            linearChange = c.get(index).resolvePenetration();
+            //linearChange = c.get(index).resolvePenetration();
 
-            //c.get(index).applyPositionChange(linearChange, angularChange);
+            c.get(index).applyPositionChange(linearChange, angularChange);
+            //angularChange[0] = 0;
+            //angularChange[1] = 0;
 
             for (i = 0; i < c.size(); i++)
             {
@@ -76,7 +77,7 @@ public class ContactResolver
                             deltaPosition.selfAdd(linearChange[d]);
 
                             c.get(i).setPenetration(c.get(i).getPenetration() +
-                                    deltaPosition.scalarProduct(c.get(i).getContactNormal()) * (b != 0 ? 1 : -1));
+                                    deltaPosition.scalarProduct(c.get(i).getContactNormal()) * (b == 0 ? 1 : -1));
                         }
                     }
                 }

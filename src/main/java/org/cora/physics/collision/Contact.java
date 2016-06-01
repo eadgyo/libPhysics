@@ -217,15 +217,13 @@ public class Contact
         FloatA vAcc = new FloatA(0);
 
         Vector2D contactVel = VPB.sub(VPA);
-        /*float restitution = (contactVel.getMagnitude() < 0.5f) ? 0 : coefRestitution;
+        float restitution = (contactVel.getMagnitude() < 0.5f) ? 0 : coefRestitution;
         Vector2D scaledContact = contactNormal.multiply(dt);
         float velocityFromAcc =  B.getLastAcceleration().scalarProduct(scaledContact) - A.getLastAcceleration().scalarProduct(scaledContact);
         float deltaVelocity = contactVel.x - restitution * (contactVel.x - velocityFromAcc);
 
         Vector2D relVel = contactVel;
-        relVel.x = deltaVelocity;*/
-
-        Vector2D relVel = contactVel;
+        relVel.x = deltaVelocity;
 
         float vn = contactNormal.scalarProduct(relVel);
         Vector2D Vn = contactNormal.multiply(vn);
@@ -295,7 +293,7 @@ public class Contact
         }
 
         // Static friction
-        /*
+
         if (coefFriction > 0.0f && vn < 0.0f)
         {
             float cone = -vt / vn;
@@ -309,7 +307,7 @@ public class Contact
 
                 frictionContact.resolveVelocity(dt);
             }
-        }*/
+        }
     }
 
     public void applyPositionChange(Vector2D linearChange[], float angularChange[])

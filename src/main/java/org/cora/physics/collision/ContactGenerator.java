@@ -260,7 +260,7 @@ public class ContactGenerator
             }
         }
 
-        float threshold = 0.001f;
+        float threshold = 0.1f;
         ArrayList<Float> s = new ArrayList<Float>(2);
         Vector2D perp = pushOA.getPerpendicular();
 

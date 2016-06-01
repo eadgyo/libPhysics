@@ -4,6 +4,8 @@ import org.cora.physics.entities.Particle;
 import org.cora.physics.entities.RigidBody;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Engine that handle and resolve objects collisions
@@ -52,9 +54,11 @@ public class ContactEngine
 
         int test = 0;
 
+        ArrayList<Map<Particle, Contact>> savedContacts = new ArrayList<Map<Particle, Contact>>();
+
         for (int i = 0; i < elements.size(); i++)
         {
-            elements.get(i).contact.clear();
+            savedContacts.add(new HashMap<Particle, Contact>());
         }
 
         while (isCollision && test < elements.size() * 2)
@@ -70,12 +74,6 @@ public class ContactEngine
                     for (int w = 0; w < contacts.size(); w++)
                     {
                         contacts.get(w).resolve(dt);
-                        /*
-                        if (!A.contact.contains(B))
-                            contacts.get(w).resolveVelocity(dt);
-                        */
-                        A.contact.add(B);
-                        B.contact.add(A);
                         isCollision = true;
                     }
                     contacts.clear();
@@ -83,6 +81,7 @@ public class ContactEngine
             }
             test++;
         }
+
     }
 
     public void update(float dt)

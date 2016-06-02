@@ -19,14 +19,19 @@ public class Contact
     private Vector2D rP[];
     private float    sep;
 
+    public static float DEFAULT_FRICTION = 0.5f;
+    public static float DEFAULT_RESTITUTION = 0.0f;
+    public static float DEFAULT_SEP = 1.0f;
+    public static boolean ACTIVE_RESTITUTION_CORRECTION = true;
+
     public Contact(Particle A, Particle B)
     {
-        this(A, B, 0.0f, 1.0f);
+        this(A, B, DEFAULT_RESTITUTION, DEFAULT_FRICTION);
     }
     
     public Contact(Particle A, Particle B, float coefRestitution, float coefFriction)
     {
-        this(A, B, coefRestitution, coefFriction, 1.0f);
+        this(A, B, coefRestitution, coefFriction, DEFAULT_SEP);
     }
     
     public Contact(Particle A, Particle B, float coefRestitution, float coefFriction, float sep)
@@ -216,14 +221,16 @@ public class Contact
 
         FloatA vAcc = new FloatA(0);
 
-        Vector2D contactVel = VPB.sub(VPA);
-        float restitution = (contactVel.getMagnitude() < 0.5f) ? 0 : coefRestitution;
-        Vector2D scaledContact = contactNormal.multiply(dt);
-        float velocityFromAcc =  B.getLastAcceleration().scalarProduct(scaledContact) - A.getLastAcceleration().scalarProduct(scaledContact);
-        float deltaVelocity = contactVel.x - restitution * (contactVel.x - velocityFromAcc);
+        Vector2D relVel = VPB.sub(VPA);
 
-        Vector2D relVel = contactVel;
-        relVel.x = deltaVelocity;
+        float restitution = (relVel.x < 0.5f) ? 0 : coefRestitution;
+        if (ACTIVE_RESTITUTION_CORRECTION && restitution != 0)
+        {
+            Vector2D scaledContact = contactNormal.multiply(dt);
+            float velocityFromAcc = B.getLastAcceleration().scalarProduct(scaledContact) - A.getLastAcceleration().scalarProduct(scaledContact);
+            float deltaVelocity = relVel.x - restitution * (relVel.x - velocityFromAcc);
+            relVel.x = deltaVelocity;
+        }
 
         float vn = contactNormal.scalarProduct(relVel);
         Vector2D Vn = contactNormal.multiply(vn);

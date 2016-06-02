@@ -1,11 +1,12 @@
 package org.cora.physics.collision;
 
+import org.cora.maths.Circle;
+import org.cora.maths.sRectangle;
+import org.cora.physics.Engine.QuadTree;
 import org.cora.physics.entities.Particle;
 import org.cora.physics.entities.RigidBody;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Engine that handle and resolve objects collisions
@@ -14,11 +15,13 @@ public class ContactEngine
 {
     private ArrayList<Particle> elements;
     private ArrayList<Contact>  contacts;
+    private QuadTree            quadTree;
 
     public ContactEngine()
     {
         elements = new ArrayList<Particle>();
         contacts = new ArrayList<Contact>();
+        quadTree = new QuadTree();
     }
 
     public void add(Particle p)
@@ -48,40 +51,76 @@ public class ContactEngine
 
     public void findAndResolveContacts(float dt)
     {
-        contacts.clear();
-        Particle A, B;
-        boolean isCollision = true;
-
-        int test = 0;
-
-        ArrayList<Map<Particle, Contact>> savedContacts = new ArrayList<Map<Particle, Contact>>();
+        float minX = Float.MAX_VALUE;
+        float minY = Float.MAX_VALUE;
+        float maxX = - Float.MAX_VALUE;
+        float maxY = - Float.MAX_VALUE;
 
         for (int i = 0; i < elements.size(); i++)
         {
-            savedContacts.add(new HashMap<Particle, Contact>());
+            elements.get(i).computeStoredBounds();
+            Circle circle = elements.get(i).getSavedCircleBound();
+
+            if (minX > circle.getMinX())
+            {
+                minX = circle.getMinX();
+            }
+
+            if (maxX < circle.getMaxX())
+            {
+                maxX = circle.getMaxX();
+            }
+
+            if (minY > circle.getMinY())
+            {
+                minY = circle.getMinY();
+            }
+
+            if (maxY < circle.getMaxY())
+            {
+                maxY = circle.getMaxY();
+            }
         }
 
+        quadTree.init(new sRectangle(minX, minY, maxX - minX, maxY - maxY));
+        quadTree.inserts(elements);
+        contacts.clear();
+
+        boolean isCollision = true;
+        ArrayList<Particle> collidings = new ArrayList<Particle>();
+        Particle A, B;
+
+        int test = 0;
         while (isCollision && test < elements.size() * 2)
         {
             isCollision = false;
             for (int i = 0; i < elements.size() - 1; i++)
             {
                 A = elements.get(i);
-                for (int j = i + 1; j < elements.size(); j++)
+
+                quadTree.retrieve(A, collidings);
+                for (int j = 0; j < collidings.size(); j++)
                 {
-                    B = elements.get(j);
-                    ContactGenerator.generateContacts(A, B, contacts, dt);
-                    for (int w = 0; w < contacts.size(); w++)
+                    B = collidings.get(j);
+                    if (B == A)
+                        continue;
+
+                    if (ContactGenerator.generateContacts(A, B, contacts, dt))
                     {
-                        contacts.get(w).resolve(dt);
-                        isCollision = true;
+                        for (int w = 0; w < contacts.size(); w++)
+                        {
+                            contacts.get(w).resolve(dt);
+                            isCollision = true;
+                        }
+                        contacts.clear();
                     }
-                    contacts.clear();
                 }
+
+                collidings.clear();
             }
             test++;
         }
-
+        quadTree.clear();
     }
 
     public void update(float dt)

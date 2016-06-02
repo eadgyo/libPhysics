@@ -1,5 +1,6 @@
 package org.cora.physics.Engine;
 
+import org.cora.physics.collision.Contact;
 import org.cora.physics.collision.ContactEngine;
 import org.cora.physics.collision.ContactGenerator;
 import org.cora.physics.entities.Particle;
@@ -96,7 +97,7 @@ public class Engine
     /**
      * Update the engine
      * 2 steps
-     * 1) force
+     * 1) apply force
      * 2) contacts resolution
      * @param dt time between since last update
      */
@@ -125,6 +126,85 @@ public class Engine
      * High thresold will make strange results
      * @param threshold value used in contacts resolution
      */
-    public void setThresholdSideDetection(float threshold) {
-        ContactGenerator.THRESHOLD_SIDE_DETECTION = threshold; }
+    public void setThresholdSideDetection(float threshold) { ContactGenerator.THRESHOLD_SIDE_DETECTION = threshold; }
+
+    /**
+     * Default paramater for non material type collision
+     * @param defaultFriction between 0 and 1.0
+     */
+    public void setDefaultFriction(float defaultFriction)
+    {
+        Contact.DEFAULT_FRICTION = defaultFriction;
+    }
+
+    /**
+     * Default paramater for non material type collision
+     * @param defaultRestitution between 0 and 1.0
+     */
+    public void setDefaultRestitution(float defaultRestitution)
+    {
+        Contact.DEFAULT_RESTITUTION = defaultRestitution;
+    }
+
+    /**
+     * Default paramater for non material type collision
+     * @param defaultSeparation between 0 and 1.0
+     */
+    public void setDefaultSeparation(float defaultSeparation)
+    {
+        Contact.DEFAULT_SEP = defaultSeparation;
+    }
+
+    /**
+     * Correction take into account last acceleration
+     * @param correction active or desactive feature
+     */
+    public void setRestitutionCorrection(boolean correction)
+    {
+        Contact.ACTIVE_RESTITUTION_CORRECTION = correction;
+    }
+
+    /**
+     * Set threshold value to accept side collision
+     * Low threshold will make resting contacts unstable
+     * High thresold will make strange results
+     * @return threshold value used in contacts resolution
+     */
+    public float getThresholdSideDetection() { return ContactGenerator.THRESHOLD_SIDE_DETECTION; }
+
+    /**
+     * Default paramater for non material type collision
+     * @return defaultFriction between 0 and 1.0
+     */
+    public float getDefaultFriction()
+    {
+        return Contact.DEFAULT_FRICTION;
+    }
+
+    /**
+     * Default paramater for non material type collision
+     * @return defaultRestitution between 0 and 1.0
+     */
+    public float setDefaultRestitution()
+    {
+        return Contact.DEFAULT_RESTITUTION;
+    }
+
+    /**
+     * Default paramater for non material type collision
+     * @return defaultSeparation between 0 and 1.0
+     */
+    public float setDefaultSeparation()
+    {
+        return Contact.DEFAULT_SEP;
+    }
+
+    /**
+     * Correction take into account last acceleration
+     * @return correction active or desactive feature
+     */
+    public boolean setRestitutionCorrection()
+    {
+        return Contact.ACTIVE_RESTITUTION_CORRECTION;
+    }
 }

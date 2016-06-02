@@ -13,6 +13,9 @@ public class ContactGenerator
     public static boolean generateContacts(Particle A, Particle B,
             ArrayList<Contact> contacts, float dt)
     {
+        if (A.containsNoCollision(B))
+            return false;
+
         Vector2D push = new Vector2D();
         FloatA t = new FloatA(dt);
 
@@ -49,8 +52,15 @@ public class ContactGenerator
     public static boolean isColliding(Particle A, Particle B, Vector2D push,
             FloatA t)
     {
-        return CollisionDetector.isColliding(A.getForm(), B.getForm(),
-                A.getVelocity(), B.getVelocity(), push, t);
+        float dt = t.v;
+        if (CollisionDetector.isColliding(A.getCircleBound(), B.getCircleBound(), A.getVelocity(), B.getVelocity(), push, t))
+        {
+            push.reset();
+            t.v = dt;
+            return CollisionDetector.isColliding(A.getForm(), B.getForm(),
+                    A.getVelocity(), B.getVelocity(), push, t);
+        }
+        return false;
     }
 
     public static boolean analyseContacts(Particle A, Particle B,

@@ -1,9 +1,14 @@
 package org.cora.physics.entities;
 
+import org.cora.maths.Circle;
 import org.cora.maths.Form;
 import org.cora.maths.Vector2D;
+import org.cora.maths.sRectangle;
 import org.cora.physics.collision.ContactInformation;
 import org.cora.physics.entities.material.MaterialType;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Particle is a physic element with no rotation
@@ -21,6 +26,9 @@ public class Particle implements Cloneable
 
     protected Form               form;
     protected MaterialType       materialType;
+    protected Set<Particle>      noCollisionElements;
+    protected sRectangle savedSRectangleBound;
+    protected Circle savedCircleBound;
 
     public Particle()
     {
@@ -29,6 +37,7 @@ public class Particle implements Cloneable
         acceleration = new Vector2D();
         lastAcceleration = new Vector2D();
         forceAccum = new Vector2D();
+        noCollisionElements = new HashSet<Particle>();
 
         isAwake = true;
         inverseMass = 0;
@@ -48,6 +57,9 @@ public class Particle implements Cloneable
         inverseMass = p.getInverseMass();
         if (p.getForm() != null)
             setForm((Form) p.getForm().clone());
+
+        noCollisionElements.clear();
+        noCollisionElements.addAll(getNoCollisionElements());
     }
 
     /**
@@ -303,5 +315,123 @@ public class Particle implements Cloneable
     public void setForm(Form form)
     {
         this.form = form;
+    }
+
+    /**
+     * Get rectangle with no rotation containing the form
+     * @return created sRectangle
+     */
+    public sRectangle getSRectangleBound()
+    {
+        return form.getSRectangleBound();
+    }
+
+    /**
+     * Get circle containing the form
+     * @return created sRectangle
+     */
+    public Circle getCircleBound()
+    {
+        return form.getCircleBound();
+    }
+
+    /**
+     * Remove collision with element
+     * @param p no collision element
+     */
+    public void addNoCollisionElement(Particle p)
+    {
+        noCollisionElements.add(p);
+        p.addNoCollisionElementFree(this);
+    }
+
+    /**
+     * Do not use
+     * @param p no collision element
+     */
+    public void addNoCollisionElementFree(Particle p)
+    {
+        noCollisionElements.add(p);
+    }
+
+    /**
+     * Restore collision with element
+     * @param p no collision element
+     */
+    public void removeNoCollisionElement(Particle p)
+    {
+        noCollisionElements.remove(p);
+        p.removeNoCollisionElementFree(this);
+    }
+
+    /**
+     * Do not use
+     * @param p no collision element
+     */
+    public void removeNoCollisionElementFree(Particle p)
+    {
+        noCollisionElements.remove(p);
+    }
+
+    /**
+     * Get all no colliding elements
+     * @return all elements
+     */
+    public final Set<Particle> getNoCollisionElements()
+    {
+        return noCollisionElements;
+    }
+
+    /**
+     * Test if an element in no collision elements
+     * @param p tested element
+     * @return test result
+     */
+    public boolean containsNoCollision(Particle p)
+    {
+        return noCollisionElements.contains(p);
+    }
+
+    /**
+     * Compute all bounds and save them
+     */
+    public void computeStoredBounds()
+    {
+        computeSRectangleBound();
+        computeCircleBound();
+    }
+
+    /**
+     * Compute sRectangle bound and save it
+     */
+    public void computeSRectangleBound()
+    {
+        this.savedSRectangleBound = getSRectangleBound();
+    }
+
+    /**
+     * Compute Circle bound and save it
+     */
+    public void computeCircleBound()
+    {
+        this.savedCircleBound = getCircleBound();
+    }
+
+    /**
+     * Get saved sRectangle bound
+     * @return saved bound
+     */
+    public sRectangle getSavedSRectangleBound()
+    {
+        return savedSRectangleBound;
+    }
+
+    /**
+     * Get saved Circle bound
+     * @return saved bound
+     */
+    public Circle getSavedCircleBound()
+    {
+        return savedCircleBound;
     }
 }

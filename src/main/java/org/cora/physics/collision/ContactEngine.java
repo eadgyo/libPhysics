@@ -82,7 +82,7 @@ public class ContactEngine
             }
         }
 
-        quadTree.init(new sRectangle(minX, minY, maxX - minX, maxY - maxY));
+        quadTree.init(new sRectangle(minX, minY, maxX - minX, maxY - minY));
         quadTree.inserts(elements);
         contacts.clear();
 
@@ -145,5 +145,14 @@ public class ContactEngine
                 ContactTest.testCollision(rA, rB, dt);
             }
         }
+    }
+
+    /**
+     * Get quadtree used for collision detection
+     * @return quadtree
+     */
+    public final QuadTree getQuadTree()
+    {
+        return quadTree;
     }
 }

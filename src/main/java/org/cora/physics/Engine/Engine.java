@@ -207,4 +207,13 @@ public class Engine
     {
         return Contact.ACTIVE_RESTITUTION_CORRECTION;
     }
+
+    /**
+     * Get quadtree used for collision detection
+     * @return quadtree
+     */
+    public final QuadTree getQuadtree()
+    {
+        return contactEngine.getQuadTree();
+    }
 }

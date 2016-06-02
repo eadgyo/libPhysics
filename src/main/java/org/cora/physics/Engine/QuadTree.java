@@ -9,13 +9,13 @@ import java.util.ArrayList;
 
 public class QuadTree
 {
-    private final static int MAX_OBJECTS = 5;
-    private final static int MAX_LEVELS = 50;
+    protected final static int MAX_OBJECTS = 5;
+    protected final static int MAX_LEVELS = 50;
 
-    private int level;
-    private ArrayList<Particle> particles;
-    private sRectangle rect;
-    private QuadTree[] nodes;
+    protected int level;
+    protected ArrayList<Particle> particles;
+    protected sRectangle rect;
+    protected QuadTree[] nodes;
 
     public QuadTree()
     {
@@ -158,4 +158,17 @@ public class QuadTree
         for(int i=0; i<4; i++)
             nodes[i].addEntities(particles);
     }
+    /*
+    public void draw(Graphics g)
+    {
+        g.drawForm(rect);
+
+        if (nodes[0] != null)
+        {
+            for (int i = 0; i < nodes.length; i++)
+            {
+                nodes[i].draw(g);
+            }
+        }
+    }*/
 }

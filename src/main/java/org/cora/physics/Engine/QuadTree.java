@@ -1,7 +1,6 @@
 package org.cora.physics.Engine;
 
 
-import org.cora.graphics.graphics.Graphics;
 import org.cora.maths.Vector2D;
 import org.cora.maths.sRectangle;
 import org.cora.physics.entities.Particle;
@@ -181,6 +180,7 @@ public class QuadTree
         return rect;
     }
 
+    /**
     public void draw(Graphics g)
     {
         g.drawForm(rect);
@@ -192,5 +192,5 @@ public class QuadTree
                 nodes[i].draw(g);
             }
         }
-    }
+    }*/
 }

@@ -20,6 +20,7 @@ public class Engine
     private Set<Particle> elements;
     private ForceRegistry forceRegistry;
     private ContactEngine contactEngine;
+    private float minDt = 0.02f;
 
     public Engine()
     {
@@ -103,6 +104,9 @@ public class Engine
      */
     public void update(float dt)
     {
+        if (dt > minDt)
+            dt = minDt;
+
         forceRegistry.update(dt);
         for (Particle p : elements)
         {
@@ -216,4 +220,18 @@ public class Engine
     {
         return contactEngine.getQuadTree();
     }
+
+    /**
+     * Change minDt engine update
+     * If minDt is too high, slow pc will have strange collisions responses
+     * If minDt is too low, physics reactions will be slow down
+     * @param minDt value
+     */
+    public void setMinDt(float minDt) { this.minDt = minDt; }
+
+    /**
+     * Get minDt engine update
+     * @return minDt value
+     */
+    public float getMinDt() { return minDt; }
 }

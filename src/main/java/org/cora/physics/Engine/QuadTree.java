@@ -1,6 +1,7 @@
 package org.cora.physics.Engine;
 
 
+import org.cora.graphics.graphics.Graphics;
 import org.cora.maths.Vector2D;
 import org.cora.maths.sRectangle;
 import org.cora.physics.entities.Particle;
@@ -79,14 +80,14 @@ public class QuadTree
         {
             if (rect.getY(2) < l_rectCenter.y)
                 index = 1;
-            else if (rect.getY() > l_rectCenter.y)
+            else if (rect.getY(0) > l_rectCenter.y)
                 index = 2;
         }
-        else if (rect.getX() > l_rectCenter.x)
+        else if (rect.getX(0) > l_rectCenter.x)
         {
             if (rect.getY(2) < l_rectCenter.y)
                 index = 0;
-            else if (rect.getY() > l_rectCenter.y)
+            else if (rect.getY(0) > l_rectCenter.y)
                 index = 3;
         }
         return index;
@@ -97,7 +98,7 @@ public class QuadTree
         if (nodes[0] != null)
         {
             int index = getIndex(particle.getSavedSRectangleBound());
-            if (index != -1)//si le rectangle rentre dans l'une des quatres cases
+            if (index != -1) // Si le rectangle rentre dans l'une des quatres cases
             {
                 nodes[index].insert(particle);
                 return;
@@ -110,8 +111,6 @@ public class QuadTree
             {
                 split();
 
-                //change here
-                //restructuration de la liste
                 int i = 0;
                 while (i < particles.size())
                 {
@@ -167,7 +166,9 @@ public class QuadTree
         if (nodes[0] == null)
             return;
         for (int i = 0; i < 4; i++)
+        {
             nodes[i].addEntities(resParticles);
+        }
     }
 
     public final QuadTree[] getNodes()
@@ -180,7 +181,7 @@ public class QuadTree
         return rect;
     }
 
-    /*public void draw(Graphics g)
+    public void draw(Graphics g)
     {
         g.drawForm(rect);
 
@@ -191,5 +192,5 @@ public class QuadTree
                 nodes[i].draw(g);
             }
         }
-    }*/
+    }
 }

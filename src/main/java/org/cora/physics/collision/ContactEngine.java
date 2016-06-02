@@ -81,9 +81,9 @@ public class ContactEngine
                 maxY = circle.getMaxY();
             }
         }
+
         quadTree.clear();
-        //quadTree.init(new sRectangle(minX, minY, maxX - minX, maxY - minY));
-        quadTree.init(new sRectangle(-100, -100, 1000, 1000));
+        quadTree.init(new sRectangle(minX, minY, maxX - minX, maxY - minY));
         quadTree.inserts(elements);
         contacts.clear();
 
@@ -98,8 +98,8 @@ public class ContactEngine
             for (int i = 0; i < elements.size(); i++)
             {
                 A = elements.get(i);
-
                 quadTree.retrieve(A, collidings);
+
                 for (int j = 0; j < collidings.size(); j++)
                 {
                     B = collidings.get(j);
@@ -116,7 +116,6 @@ public class ContactEngine
                     }
                     contacts.clear();
                 }
-
                 collidings.clear();
             }
             test++;

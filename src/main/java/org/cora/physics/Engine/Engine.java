@@ -1,5 +1,6 @@
 package org.cora.physics.Engine;
 
+import org.cora.maths.sRectangle;
 import org.cora.physics.collision.Contact;
 import org.cora.physics.collision.ContactEngine;
 import org.cora.physics.collision.ContactGenerator;
@@ -7,6 +8,7 @@ import org.cora.physics.entities.Particle;
 import org.cora.physics.force.ForceGenerator;
 import org.cora.physics.force.ForceRegistry;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -124,7 +126,6 @@ public class Engine
         return new HashSet<Particle>(elements);
     }
 
-
     /**
      * Set threshold value to accept side collision
      * Low threshold will make resting contacts unstable
@@ -236,4 +237,55 @@ public class Engine
      * @return minDt value
      */
     public float getMinDt() { return minDt; }
+
+    /**
+     * Get elements colliding form QT
+     * @param A element
+     * @return collidings element int set
+     */
+    public Set<Particle> getCollisionsQTSet(Particle A)
+    {
+        return contactEngine.getCollisionsQTSet(A);
+    }
+
+    /**
+     * Get elements colliding form QT
+     * @param A element
+     * @return collidings element int List
+     */
+    public ArrayList<Particle> getCollisionsQTList(Particle A)
+    {
+        return contactEngine.getCollisionsQTList(A);
+    }
+
+    /**
+     * Get elements colliding form QT
+     * @param rec box
+     * @return collidings element int set
+     */
+    public Set<Particle> getCollisionsQTSet(sRectangle rec)
+    {
+        return contactEngine.getCollisionsQTSet(rec);
+    }
+
+    /**
+     * Get elements colliding form QT
+     * @param rec box
+     * @return collidings element int List
+     */
+    public ArrayList<Particle> getCollisionsQTList(sRectangle rec)
+    {
+        return contactEngine.getCollisionsQTList(rec);
+    }
+
+    /**
+     * Know if two elements were colliding during last contact resolution
+     * @param A first element
+     * @param B second element
+     * @return collision result
+     */
+    public boolean wasColliding(Particle A, Particle B)
+    {
+        return contactEngine.wasColliding(A, B);
+    }
 }

@@ -6,7 +6,7 @@ import org.cora.physics.Engine.QuadTree;
 import org.cora.physics.entities.Particle;
 import org.cora.physics.entities.RigidBody;
 
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Engine that handle and resolve objects collisions
@@ -16,12 +16,16 @@ public class ContactEngine
     private ArrayList<Particle> elements;
     private ArrayList<Contact>  contacts;
     private QuadTree            quadTree;
+    private boolean             saveCollision;
+    private Map<Particle, Set<Particle>> savedCollisions;
 
     public ContactEngine()
     {
         elements = new ArrayList<Particle>();
         contacts = new ArrayList<Contact>();
+        savedCollisions = new HashMap<Particle, Set<Particle>>();
         quadTree = new QuadTree();
+        saveCollision = true;
     }
 
     public void add(Particle p)
@@ -86,6 +90,7 @@ public class ContactEngine
         quadTree.init(new sRectangle(minX, minY, maxX - minX, maxY - minY));
         quadTree.inserts(elements);
         contacts.clear();
+        savedCollisions.clear();
 
         boolean isCollision = true;
         ArrayList<Particle> collidings = new ArrayList<Particle>();
@@ -108,6 +113,7 @@ public class ContactEngine
 
                     if (ContactGenerator.generateContacts(A, B, contacts, dt))
                     {
+                        addSavedCollision(A, B);
                         for (int w = 0; w < contacts.size(); w++)
                         {
                             contacts.get(w).resolve(dt);
@@ -120,8 +126,26 @@ public class ContactEngine
             }
             test++;
         }
+    }
 
+    private void addSavedCollision(Particle A, Particle B)
+    {
+        if (saveCollision)
+        {
+            addSavedCollisionFree(A, B);
+            addSavedCollisionFree(B, A);
+        }
+    }
 
+    private void addSavedCollisionFree(Particle A, Particle B)
+    {
+        Set<Particle> ps = savedCollisions.get(A);
+        if (ps == null)
+        {
+            ps = new HashSet<Particle>();
+            savedCollisions.put(A, ps);
+        }
+        ps.add(B);
     }
 
     public void update(float dt)
@@ -155,5 +179,65 @@ public class ContactEngine
     public final QuadTree getQuadTree()
     {
         return quadTree;
+    }
+
+    /**
+     * Get elements colliding form QT
+     * @param A element
+     * @return collidings element int set
+     */
+    public Set<Particle> getCollisionsQTSet(Particle A)
+    {
+        Set<Particle> collidings = new HashSet<Particle>();
+        quadTree.retrieve(A, collidings);
+        return collidings;
+    }
+
+    /**
+     * Get elements colliding form QT
+     * @param A element
+     * @return collidings element int List
+     */
+    public ArrayList<Particle> getCollisionsQTList(Particle A)
+    {
+        ArrayList<Particle> collidings = new ArrayList<Particle>();
+        quadTree.retrieve(A, collidings);
+        return collidings;
+    }
+
+    /**
+     * Get elements colliding form QT
+     * @param rec box
+     * @return collidings element int set
+     */
+    public Set<Particle> getCollisionsQTSet(sRectangle rec)
+    {
+        Set<Particle> collidings = new HashSet<Particle>();
+        quadTree.retrieve(rec, collidings);
+        return collidings;
+    }
+
+    /**
+     * Get elements colliding form QT
+     * @param rec box
+     * @return collidings element int List
+     */
+    public ArrayList<Particle> getCollisionsQTList(sRectangle rec)
+    {
+        ArrayList<Particle> collidings = new ArrayList<Particle>();
+        quadTree.retrieve(rec, collidings);
+        return collidings;
+    }
+
+    /**
+     * Know if two elements were colliding during last contact resolution
+     * @param A first element
+     * @param B second element
+     * @return collision result
+     */
+    public boolean wasColliding(Particle A, Particle B)
+    {
+        Set<Particle> ps = savedCollisions.get(A);
+        return ps != null && ps.contains(B);
     }
 }

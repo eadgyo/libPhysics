@@ -6,6 +6,9 @@ import org.cora.maths.sRectangle;
 import org.cora.physics.entities.Particle;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class QuadTree
 {
@@ -13,7 +16,7 @@ public class QuadTree
     private final static int MAX_LEVELS = 50;
 
     private int level;
-    private ArrayList<Particle> particles;
+    private Set<Particle> particles;
     private sRectangle rect;
     private QuadTree[] nodes;
 
@@ -22,7 +25,7 @@ public class QuadTree
         level = 0;
         rect = null;
 
-        this.particles = new ArrayList<Particle>();
+        this.particles = new HashSet<Particle>();
         nodes = new QuadTree[4];
     }
 
@@ -31,7 +34,7 @@ public class QuadTree
         this.level = level;
         this.rect = rect;
 
-        this.particles = new ArrayList<Particle>();
+        this.particles = new HashSet<Particle>();
         nodes = new QuadTree[4];
     }
 
@@ -109,7 +112,18 @@ public class QuadTree
             if (nodes[0] == null)
             {
                 split();
-
+                Iterator<Particle> it = particles.iterator();
+                while (it.hasNext())
+                {
+                    Particle p = it.next();
+                    int index = getIndex(p.getSavedSRectangleBound());
+                    if (index != -1)
+                    {
+                        it.remove();
+                        nodes[index].insert(p);
+                    }
+                }
+                /*
                 int i = 0;
                 while (i < particles.size())
                 {
@@ -118,7 +132,7 @@ public class QuadTree
                         nodes[index].insert(particles.remove(i));
                     else
                         i++;
-                }
+                }*/
             }
             int index = getIndex(particle.getSavedSRectangleBound());
             if (index != -1)
@@ -143,6 +157,11 @@ public class QuadTree
         retrieve(particle.getSavedSRectangleBound(), resParticles);
     }
 
+    public void retrieve(Particle particle, Set<Particle> resParticles)
+    {
+        retrieve(particle.getSavedSRectangleBound(), resParticles);
+    }
+
     public boolean isValid(sRectangle rec)
     {
         return rec.getX(0) > rect.getX(0) && rec.getX(2) < rect.getX(2)
@@ -157,6 +176,27 @@ public class QuadTree
         else
             addEntities(resParticles);
         resParticles.addAll(this.particles);
+    }
+
+    public void retrieve(sRectangle rect, Set<Particle> resParticles)
+    {
+        int index = getIndex(rect);
+        if (index != -1 && nodes[0] != null)
+            nodes[index].retrieve(rect, resParticles);
+        else
+            addEntities(resParticles);
+        resParticles.addAll(this.particles);
+    }
+
+    public void addEntities(Set<Particle> resParticles)
+    {
+        resParticles.addAll(particles);
+        if (nodes[0] == null)
+            return;
+        for (int i = 0; i < 4; i++)
+        {
+            nodes[i].addEntities(resParticles);
+        }
     }
 
     public void addEntities(ArrayList<Particle> resParticles)

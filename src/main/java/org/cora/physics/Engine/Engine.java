@@ -126,14 +126,6 @@ public class Engine
 
 
     /**
-     * Set min threshold value to accept rotation with side by side collision
-     * Low threshold will make resting contacts unstable
-     * High thresold will make strange results
-     * @param threshold value used in contacts resolution
-     */
-    public void setThresholdRotation(float threshold) { Contact.THRESHOLD_ROTATION = threshold; }
-
-    /**
      * Set threshold value to accept side collision
      * Low threshold will make resting contacts unstable
      * High thresold will make strange results
@@ -177,13 +169,6 @@ public class Engine
         Contact.ACTIVE_RESTITUTION_CORRECTION = correction;
     }
 
-    /**
-     * Set min threshold value to accept rotation with side by side collision
-     * Low threshold will make resting contacts unstable
-     * High thresold will make strange results
-     * @return threshold value used in contacts resolution
-     */
-    public float getThresholdRotation() { return Contact.THRESHOLD_ROTATION; }
 
     /**
      * Set threshold value to accept side collision

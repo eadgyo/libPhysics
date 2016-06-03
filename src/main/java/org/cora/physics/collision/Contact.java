@@ -24,7 +24,6 @@ public class Contact
     public static float DEFAULT_RESTITUTION = 0.0f;
     public static float DEFAULT_SEP = 1.0f;
     public static boolean ACTIVE_RESTITUTION_CORRECTION = true;
-    public static float THRESHOLD_ROTATION = 0.0001f;
 
     public Contact(Particle A, Particle B)
     {
@@ -241,8 +240,7 @@ public class Contact
         {
             Vector2D scaledContact = contactNormal.multiply(dt);
             float velocityFromAcc = B.getLastAcceleration().scalarProduct(scaledContact) - A.getLastAcceleration().scalarProduct(scaledContact);
-            float deltaVelocity = relVel.x - restitution * (relVel.x - velocityFromAcc);
-            relVel.x = deltaVelocity;
+            relVel.x = relVel.x - restitution * (relVel.x - velocityFromAcc);;
         }
 
         float vn = contactNormal.scalarProduct(relVel);
@@ -303,19 +301,15 @@ public class Contact
         if (rA != null)
         {
             float rotA1 = -rA.getInverseInertia() * rAP.crossProductZ(J);
-            if (isNotSide || Math.abs(rotA1) > THRESHOLD_ROTATION)
-            {
-                rA.setRotation(rotA + rotA1);
-            }
+            rA.setRotation(rotA + rotA1);
+
         }
 
         if (rB != null)
         {
             float rotB1 = rB.getInverseInertia() * rBP.crossProductZ(J);
-            if (isNotSide || Math.abs(rotB1) > THRESHOLD_ROTATION)
-            {
-                rB.setRotation(rotB + rotB1);
-            }
+            rB.setRotation(rotB + rotB1);
+
         }
 
 

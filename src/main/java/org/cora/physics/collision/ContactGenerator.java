@@ -318,12 +318,7 @@ public class ContactGenerator
                 }
             }
         }
-
-        if (S.size() != 2)
-        {
-            System.out.println("A");
-        }
-
+        
         return S;
     }
 

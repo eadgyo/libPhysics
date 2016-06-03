@@ -24,6 +24,7 @@ public class Contact
     public static float DEFAULT_RESTITUTION = 0.0f;
     public static float DEFAULT_SEP = 1.0f;
     public static boolean ACTIVE_RESTITUTION_CORRECTION = true;
+    public static float THRESHOLD_ROTATION = 0.0001f;
 
     public Contact(Particle A, Particle B)
     {
@@ -299,20 +300,24 @@ public class Contact
         B.setVelocity(VB1);
 
         // Angular Responce
-        if (isNotSide)
+        if (rA != null)
         {
-            if (rA != null)
+            float rotA1 = -rA.getInverseInertia() * rAP.crossProductZ(J);
+            if (isNotSide || Math.abs(rotA1) > THRESHOLD_ROTATION)
             {
-                float rotA1 = rotA + -rA.getInverseInertia() * rAP.crossProductZ(J);
-                rA.setRotation(rotA1);
-            }
-
-            if (rB != null)
-            {
-                float rotB1 = rotB + rB.getInverseInertia() * rBP.crossProductZ(J);
-                rB.setRotation(rotB1);
+                rA.setRotation(rotA + rotA1);
             }
         }
+
+        if (rB != null)
+        {
+            float rotB1 = rB.getInverseInertia() * rBP.crossProductZ(J);
+            if (isNotSide || Math.abs(rotB1) > THRESHOLD_ROTATION)
+            {
+                rB.setRotation(rotB + rotB1);
+            }
+        }
+
 
         // Static friction
         if (coefFriction > 0.0f && vn < 0.0f)

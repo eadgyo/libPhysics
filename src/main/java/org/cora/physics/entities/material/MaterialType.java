@@ -11,12 +11,18 @@ import org.cora.physics.collision.ContactInformation;
 public class MaterialType
 {
     private Map<MaterialType, ContactInformation> collisionMaterials;
-    public final static float DEFAULT_DENSITY = 0.5f;
-    private float density = DEFAULT_DENSITY;
+    public final static float DEFAULT_DENSITY = 0.05f;
+    private float density;
+
+    public MaterialType(float density)
+    {
+        this.density = density;
+        collisionMaterials = new HashMap<MaterialType, ContactInformation>();
+    }
 
     public MaterialType()
     {
-        collisionMaterials = new HashMap<MaterialType, ContactInformation>();
+        this(DEFAULT_DENSITY);
     }
 
     /**

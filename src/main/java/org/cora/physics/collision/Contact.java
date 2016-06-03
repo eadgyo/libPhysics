@@ -18,6 +18,7 @@ public class Contact
     private Vector2D CA, CB;
     private Vector2D rP[];
     private float    sep;
+    private boolean isNotSide;
 
     public static float DEFAULT_FRICTION = 0.5f;
     public static float DEFAULT_RESTITUTION = 0.0f;
@@ -45,6 +46,7 @@ public class Contact
         contactNormal = new Vector2D();
         this.A = A;
         this.B = B;
+        isNotSide = true;
     }
     
     public Particle get(int i)
@@ -142,6 +144,16 @@ public class Contact
     {
         CB = cB;
         rP[1].set(CB.sub(B.getPosition()));
+    }
+
+    public boolean getIsNotSide()
+    {
+        return isNotSide;
+    }
+
+    public void setIsNotSide(boolean isNotSide)
+    {
+        this.isNotSide = isNotSide;
     }
 
     public Vector2D getRelativePenetration(int i)
@@ -287,20 +299,22 @@ public class Contact
         B.setVelocity(VB1);
 
         // Angular Responce
-        if (rA != null)
+        if (isNotSide)
         {
-            float rotA1 = rotA + -rA.getInverseInertia() * rAP.crossProductZ(J);
-            rA.setRotation(rotA1);
-        }
+            if (rA != null)
+            {
+                float rotA1 = rotA + -rA.getInverseInertia() * rAP.crossProductZ(J);
+                rA.setRotation(rotA1);
+            }
 
-        if (rB != null)
-        {
-            float rotB1 = rotB + rB.getInverseInertia() * rBP.crossProductZ(J);
-            rB.setRotation(rotB1);
+            if (rB != null)
+            {
+                float rotB1 = rotB + rB.getInverseInertia() * rBP.crossProductZ(J);
+                rB.setRotation(rotB1);
+            }
         }
 
         // Static friction
-
         if (coefFriction > 0.0f && vn < 0.0f)
         {
             float cone = -vt / vn;

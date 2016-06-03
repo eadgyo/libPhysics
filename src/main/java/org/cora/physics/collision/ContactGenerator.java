@@ -34,6 +34,7 @@ public class ContactGenerator
             {
                 contacts.get(i).setContactNormal(n);
                 contacts.get(i).setPenetration(t.v);
+                contacts.get(i).setIsNotSide(contactsA.size() != 2 || contactsB.size() != 2);
             }
 
             ContactInformation information = A.getContactInformation(B);
@@ -316,6 +317,11 @@ public class ContactGenerator
                     }
                 }
             }
+        }
+
+        if (S.size() != 2)
+        {
+            System.out.println("A");
         }
 
         return S;

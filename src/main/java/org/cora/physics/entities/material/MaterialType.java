@@ -94,7 +94,6 @@ public class MaterialType
 
     /**
      * Set material density
-     * @return material
      */
     public void setDensity(float density)
     {

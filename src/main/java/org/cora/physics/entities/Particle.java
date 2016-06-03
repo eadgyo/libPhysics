@@ -78,6 +78,16 @@ public class Particle implements Cloneable
         }
     }
 
+    public void initPhysics(float mass)
+    {
+        this.inverseMass = 1.0f / mass;
+    }
+
+    public void initPhysicsInverseMass(float iMass)
+    {
+        this.inverseMass = iMass;
+    }
+
     public void computeMass()
     {
         float density;

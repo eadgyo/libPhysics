@@ -20,6 +20,26 @@ public class RigidBody extends Particle
         }
     }
 
+    @Override
+    public void initPhysics(float mass)
+    {
+        super.initPhysics(mass);
+        if (form != null)
+        {
+            computeInertia();
+        }
+    }
+
+    @Override
+    public void initPhysicsInverseMass(float iMass)
+    {
+        super.initPhysicsInverseMass(iMass);
+        if (form != null)
+        {
+            computeInertia();
+        }
+    }
+
     public float getTorqueAccum()
     {
         return torqueAccum;

@@ -96,7 +96,7 @@ public class Particle implements Cloneable
         else
             density = materialType.getDensity();
 
-        this.inverseMass = form.calculateMass(density);
+        this.inverseMass = 1.0f / form.calculateMass(density);
     }
 
     public void integrate(float dt)

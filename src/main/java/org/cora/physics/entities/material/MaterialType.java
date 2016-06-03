@@ -11,7 +11,9 @@ import org.cora.physics.collision.ContactInformation;
 public class MaterialType
 {
     private Map<MaterialType, ContactInformation> collisionMaterials;
-    
+    public final static float DEFAULT_DENSITY = 0.5f;
+    private float density = DEFAULT_DENSITY;
+
     public MaterialType()
     {
         collisionMaterials = new HashMap<MaterialType, ContactInformation>();
@@ -79,5 +81,23 @@ public class MaterialType
     public ContactInformation removeMaterialInformationFree(MaterialType material)
     {
         return collisionMaterials.remove(material);
+    }
+
+    /**
+     * Get material density
+     * @return material density
+     */
+    public float getDensity()
+    {
+        return density;
+    }
+
+    /**
+     * Set material density
+     * @return material
+     */
+    public void setDensity(float density)
+    {
+        this.density = density;
     }
 }

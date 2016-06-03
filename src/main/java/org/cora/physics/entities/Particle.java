@@ -62,19 +62,31 @@ public class Particle implements Cloneable
         noCollisionElements.addAll(getNoCollisionElements());
     }
 
-    /**
-     * Init physics data like inertia
-     */
-    public void initPhysics()
-    {
-
-    }
 
     public Object clone()
     {
         Particle clone = new Particle();
         clone.set(this);
         return clone;
+    }
+
+    public void initPhysics()
+    {
+        if (form != null)
+        {
+            computeMass();
+        }
+    }
+
+    public void computeMass()
+    {
+        float density;
+        if (materialType == null)
+            density = MaterialType.DEFAULT_DENSITY;
+        else
+            density = materialType.getDensity();
+
+        this.inverseMass = form.calculateMass(density);
     }
 
     public void integrate(float dt)
@@ -312,6 +324,10 @@ public class Particle implements Cloneable
         return form;
     }
 
+    /**
+     * Set new form without inertia and mass update
+     * @param form new form
+     */
     public void setForm(Form form)
     {
         this.form = form;

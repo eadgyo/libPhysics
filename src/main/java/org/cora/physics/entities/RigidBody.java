@@ -13,10 +13,9 @@ public class RigidBody extends Particle
 
     @Override
     public void initPhysics()
-    {
-        super.initPhysics();
-        if (form != null)
+    {   if (form != null)
         {
+            computeMass();
             computeInertia();
         }
     }

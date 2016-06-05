@@ -1,6 +1,8 @@
 package org.cora.physics.collision;
 
 import org.cora.maths.Circle;
+import org.cora.maths.Form;
+import org.cora.maths.collision.CollisionDetectorNoT;
 import org.cora.maths.sRectangle;
 import org.cora.physics.Engine.QuadTree;
 import org.cora.physics.entities.Particle;
@@ -182,52 +184,133 @@ public class ContactEngine
     }
 
     /**
-     * Get elements colliding form QT
+     * Get elements may colliding form QT
      * @param A element
      * @return collidings element int set
      */
     public Set<Particle> getCollisionsQTSet(Particle A)
     {
-        Set<Particle> collidings = new HashSet<Particle>();
-        quadTree.retrieve(A, collidings);
-        return collidings;
+        Set<Particle> mayCollidings = new HashSet<Particle>();
+        quadTree.retrieve(A, mayCollidings);
+        return mayCollidings;
     }
 
     /**
-     * Get elements colliding form QT
+     * Get elements may colliding form QT
      * @param A element
      * @return collidings element int List
      */
     public ArrayList<Particle> getCollisionsQTList(Particle A)
     {
-        ArrayList<Particle> collidings = new ArrayList<Particle>();
-        quadTree.retrieve(A, collidings);
-        return collidings;
+        ArrayList<Particle> mayCollidings = new ArrayList<Particle>();
+        quadTree.retrieve(A, mayCollidings);
+        return mayCollidings;
     }
 
     /**
-     * Get elements colliding form QT
+     * Get elements may colliding form QT
      * @param rec box
      * @return collidings element int set
      */
     public Set<Particle> getCollisionsQTSet(sRectangle rec)
     {
-        Set<Particle> collidings = new HashSet<Particle>();
-        quadTree.retrieve(rec, collidings);
-        return collidings;
+        Set<Particle> mayCollidings = new HashSet<Particle>();
+        quadTree.retrieve(rec, mayCollidings);
+        return mayCollidings;
     }
 
     /**
-     * Get elements colliding form QT
+     * Get elements may colliding form QT
      * @param rec box
      * @return collidings element int List
      */
     public ArrayList<Particle> getCollisionsQTList(sRectangle rec)
     {
-        ArrayList<Particle> collidings = new ArrayList<Particle>();
-        quadTree.retrieve(rec, collidings);
+        ArrayList<Particle> mayCollidings = new ArrayList<Particle>();
+        quadTree.retrieve(rec, mayCollidings);
+        return mayCollidings;
+    }
+
+    /**
+     * Get colliding elements
+     * @param f form
+     * @return collidings element int set
+     */
+    public Set<Particle> getCollidingsSet(Form f)
+    {
+        ArrayList<Particle> mayCollidings = getCollisionsQTList(f.getSRectangleBound());
+        Set<Particle> collidings = new HashSet<Particle>();
+
+        Circle cF = f.getCircleBound();
+
+        for (int i = 0; i < mayCollidings.size(); i++)
+        {
+            if (CollisionDetectorNoT.isCollidingOptimised(f, mayCollidings.get(i).getForm(), f.getCircleBound(), cF))
+                collidings.add(mayCollidings.get(i));
+        }
+
         return collidings;
     }
+
+    /**
+     * Get colliding elements
+     * @param f form
+     * @return collidings element int List
+     */
+    public ArrayList<Particle> getCollidingsList(Form f)
+    {
+        ArrayList<Particle> mayCollidings = getCollisionsQTList(f.getSRectangleBound());
+        ArrayList<Particle> collidings = new ArrayList<Particle>();
+
+        Circle cF = f.getCircleBound();
+
+        for (int i = 0; i < mayCollidings.size(); i++)
+        {
+            if (CollisionDetectorNoT.isCollidingOptimised(f, mayCollidings.get(i).getForm(), f.getCircleBound(), cF))
+            collidings.add(mayCollidings.get(i));
+        }
+
+        return collidings;
+    }
+
+    /**
+     * Get colliding elements
+     * @param A element
+     * @return collidings element int set
+     */
+    public Set<Particle> getCollidingsSet(Particle A)
+    {
+        ArrayList<Particle> mayCollidings = getCollisionsQTList(A.getSavedSRectangleBound());
+        Set<Particle> collidings = new HashSet<>();
+
+        for (int i = 0; i < mayCollidings.size(); i++)
+        {
+            if (CollisionDetectorNoT.isCollidingOptimised(A.getForm(), mayCollidings.get(i).getForm(), A.getSavedCircleBound(), mayCollidings.get(i).getSavedCircleBound()))
+            collidings.add(mayCollidings.get(i));
+        }
+
+        return collidings;
+    }
+
+    /**
+     * Get colliding elements
+     * @param A element
+     * @return collidings element int List
+     */
+    public ArrayList<Particle> getCollidingsList(Particle A)
+    {
+        ArrayList<Particle> mayCollidings = getCollisionsQTList(A.getSavedSRectangleBound());
+        ArrayList<Particle> collidings = new ArrayList<Particle>();
+
+        for (int i = 0; i < mayCollidings.size(); i++)
+        {
+            if (CollisionDetectorNoT.isCollidingOptimised(A.getForm(), mayCollidings.get(i).getForm(), A.getSavedCircleBound(), mayCollidings.get(i).getSavedCircleBound()))
+            collidings.add(mayCollidings.get(i));
+        }
+
+        return collidings;
+    }
+
 
     /**
      * Know if two elements were colliding during last contact resolution

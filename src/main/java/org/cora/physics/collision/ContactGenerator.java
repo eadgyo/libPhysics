@@ -53,13 +53,8 @@ public class ContactGenerator
     public static boolean isColliding(Particle A, Particle B, Vector2D push,
             FloatA t)
     {
-        if (CollisionDetector.isColliding(A.getCircleBound(), B.getCircleBound(), A.getVelocity(), B.getVelocity(), push, new FloatA(0)))
-        {
-            push.reset();
-            return CollisionDetector.isColliding(A.getForm(), B.getForm(),
-                    A.getVelocity(), B.getVelocity(), push, t);
-        }
-        return false;
+        return CollisionDetector.isCollidingOptimised(A.getForm(), B.getForm(), A.getCircleBound(), B.getCircleBound(),
+                A.getVelocity(), B.getVelocity(), push, t);
     }
 
     public static boolean analyseContacts(Particle A, Particle B,

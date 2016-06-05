@@ -1,8 +1,6 @@
 package org.cora.physics.Engine;
 
-import org.cora.maths.Circle;
 import org.cora.maths.Form;
-import org.cora.maths.collision.CollisionDetectorNoT;
 import org.cora.maths.sRectangle;
 import org.cora.physics.collision.Contact;
 import org.cora.physics.collision.ContactEngine;
@@ -308,7 +306,7 @@ public class Engine
      */
     public float getMinXQT()
     {
-        return contactEngine.getMinX();
+        return contactEngine.getMinXQT();
     }
 
     /**
@@ -317,7 +315,7 @@ public class Engine
      */
     public float getMaxXQT()
     {
-        return contactEngine.getMaxX();
+        return contactEngine.getMaxXQT();
     }
 
     /**
@@ -326,7 +324,7 @@ public class Engine
      */
     public float getMinYQT()
     {
-        return contactEngine.getMinY();
+        return contactEngine.getMinYQT();
     }
 
     /**
@@ -335,7 +333,7 @@ public class Engine
      */
     public float getMaxYQT()
     {
-        return contactEngine.getMaxY();
+        return contactEngine.getMaxYQT();
     }
 
     /**

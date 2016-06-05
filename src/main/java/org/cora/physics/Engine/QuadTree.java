@@ -25,7 +25,8 @@ public class QuadTree
         level = 0;
         rect = null;
 
-        this.particles = new HashSet<Particle>();
+        particles = new HashSet<Particle>();
+        rect = new sRectangle();
         nodes = new QuadTree[4];
     }
 
@@ -41,7 +42,13 @@ public class QuadTree
     public void init(sRectangle rect)
     {
         level = 0;
-        this.rect = rect;
+        this.rect.set(rect);
+    }
+
+    public void init(float x, float y, float width, float height)
+    {
+        level = 0;
+        this.rect.set(x, y, width, height);
     }
 
     public void setRect(sRectangle rect)

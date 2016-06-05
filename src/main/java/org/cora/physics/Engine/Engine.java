@@ -377,6 +377,26 @@ public class Engine
     }
 
     /**
+     * Test if an element is colliding
+     * @param f form
+     * @return collidings element int List
+     */
+    public boolean isColliding(Form f)
+    {
+        return contactEngine.isColliding(f);
+    }
+
+    /**
+     * Test if an element is colliding
+     * @param A element
+     * @return collidings element int List
+     */
+    public boolean isColliding(Particle A)
+    {
+        return contactEngine.isColliding(A);
+    }
+
+    /**
      * Know if an element was colliding during last contact resolution
      * @param A element
      * @return collision result

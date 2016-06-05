@@ -221,6 +221,42 @@ public class QuadTree
     }
 
     /**
+     * Get min x of rect
+     * @return min x
+     */
+    public float getMinX()
+    {
+        return rect.getMinX();
+    }
+
+    /**
+     * Get max x of rect
+     * @return max x
+     */
+    public float getMaxX()
+    {
+        return rect.getMaxX();
+    }
+
+    /**
+     * Get min y of rect
+     * @return min y
+     */
+    public float getMinY()
+    {
+        return rect.getMinY();
+    }
+
+    /**
+     * Get max y of rect
+     * @return max y
+     */
+    public float getMaxY()
+    {
+        return rect.getMaxY();
+    }
+
+    /**
     public void draw(Graphics g)
     {
         g.drawForm(rect);

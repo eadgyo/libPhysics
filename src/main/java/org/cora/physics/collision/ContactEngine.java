@@ -240,4 +240,51 @@ public class ContactEngine
         Set<Particle> ps = savedCollisions.get(A);
         return ps != null && ps.contains(B);
     }
+
+    /**
+     * Get the rectangle of quadtree
+     * All elements are inside this rect
+     * @return bound
+     */
+    public sRectangle getQTBound()
+    {
+        return quadTree.getRect();
+    }
+
+
+    /**
+     * Get min x of quatree's rect
+     * @return min x
+     */
+    public float getMinXQT()
+    {
+        return quadTree.getMinX();
+    }
+
+    /**
+     * Get max x of quadtree's rect
+     * @return max x
+     */
+    public float getMaxXQT()
+    {
+        return quadTree.getMaxX();
+    }
+
+    /**
+     * Get min y of quadtree's rect
+     * @return min y
+     */
+    public float getMinYQT()
+    {
+        return quadTree.getMinY();
+    }
+
+    /**
+     * Get max y of quadtree's rect
+     * @return max y
+     */
+    public float getMaxYQT()
+    {
+        return quadTree.getMaxY();
+    }
 }

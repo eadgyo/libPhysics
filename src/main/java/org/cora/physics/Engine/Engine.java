@@ -288,4 +288,50 @@ public class Engine
     {
         return contactEngine.wasColliding(A, B);
     }
+
+    /**
+     * Get the rectangle of quadtree
+     * All elements are inside this rect
+     * @return bound
+     */
+    public sRectangle getQTBound()
+    {
+        return contactEngine.getQTBound();
+    }
+
+    /**
+     * Get min x of quatree's rect
+     * @return min x
+     */
+    public float getMinXQT()
+    {
+        return contactEngine.getMinX();
+    }
+
+    /**
+     * Get max x of quadtree's rect
+     * @return max x
+     */
+    public float getMaxXQT()
+    {
+        return contactEngine.getMaxX();
+    }
+
+    /**
+     * Get min y of quadtree's rect
+     * @return min y
+     */
+    public float getMinYQT()
+    {
+        return contactEngine.getMinY();
+    }
+
+    /**
+     * Get max y of quadtree's rect
+     * @return max y
+     */
+    public float getMaxYQT()
+    {
+        return contactEngine.getMaxY();
+    }
 }

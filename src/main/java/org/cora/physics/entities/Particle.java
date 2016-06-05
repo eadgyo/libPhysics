@@ -282,6 +282,13 @@ public class Particle implements Cloneable
         return position;
     }
 
+    public void setPosition(float x, float y)
+    {
+        this.position.set(x, y);
+        if (form != null)
+            form.setPos(position);
+    }
+
     public void setPosition(Vector2D position)
     {
         this.position.set(position);

@@ -313,6 +313,46 @@ public class ContactEngine
 
 
     /**
+     * Test if an element is colliding
+     * @param f form
+     * @return collidings element int List
+     */
+    public boolean isColliding(Form f)
+    {
+        ArrayList<Particle> mayCollidings = getCollisionsQTList(f.getSRectangleBound());
+        ArrayList<Particle> collidings = new ArrayList<Particle>();
+
+        Circle cF = f.getCircleBound();
+
+        for (int i = 0; i < mayCollidings.size(); i++)
+        {
+            if (CollisionDetectorNoT.isCollidingOptimised(f, mayCollidings.get(i).getForm(), f.getCircleBound(), cF))
+                return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Test if an element is colliding
+     * @param A element
+     * @return collidings element int List
+     */
+    public boolean isColliding(Particle A)
+    {
+        ArrayList<Particle> mayCollidings = getCollisionsQTList(A.getSavedSRectangleBound());
+        ArrayList<Particle> collidings = new ArrayList<Particle>();
+
+        for (int i = 0; i < mayCollidings.size(); i++)
+        {
+            if (CollisionDetectorNoT.isCollidingOptimised(A.getForm(), mayCollidings.get(i).getForm(), A.getSavedCircleBound(), mayCollidings.get(i).getSavedCircleBound()))
+                return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Know if two elements were colliding during last contact resolution
      * @param A first element
      * @param B second element
@@ -322,6 +362,26 @@ public class ContactEngine
     {
         Set<Particle> ps = savedCollisions.get(A);
         return ps != null && ps.contains(B);
+    }
+
+    /**
+     * Know if an element was colliding during last contact resolution
+     * @param A element
+     * @return collision result
+     */
+    public boolean wasColliding(Particle A)
+    {
+        return savedCollisions.get(A).size() != 0;
+    }
+
+    /**
+     * Get all elements that were in collision with A during last contact resolution
+     * @param A element
+     * @return all elements that were in collision or null if no collision
+     */
+    public Set<Particle> getWereCollidingWith(Particle A)
+    {
+        return savedCollisions.get(A);
     }
 
     /**

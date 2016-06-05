@@ -375,4 +375,24 @@ public class Engine
     {
         return contactEngine.getCollidingsList(A);
     }
+
+    /**
+     * Know if an element was colliding during last contact resolution
+     * @param A element
+     * @return collision result
+     */
+    public boolean wasColliding(Particle A)
+    {
+        return contactEngine.wasColliding(A);
+    }
+
+    /**
+     * Get all elements that were in collision with A during last contact resolution
+     * @param A element
+     * @return all elements that were in collision or null if no collision
+     */
+    public Set<Particle> getWereCollidingWith(Particle A)
+    {
+        return contactEngine.getWereCollidingWith(A);
+    }
 }

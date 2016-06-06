@@ -371,7 +371,8 @@ public class ContactEngine
      */
     public boolean wasColliding(Particle A)
     {
-        return savedCollisions.get(A).size() != 0;
+        Set<Particle> ps = savedCollisions.get(A);
+        return ps != null && ps.size() != 0;
     }
 
     /**

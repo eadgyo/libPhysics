@@ -215,8 +215,17 @@ public class Contact
         Vector2D VA = A.getVelocity();
         Vector2D VB = B.getVelocity();
 
-        RigidBody rA = (RigidBody) A;
-        RigidBody rB = (RigidBody) B;
+        RigidBody rA;
+        if (A instanceof RigidBody)
+            rA = (RigidBody) A;
+        else
+            rA = null;
+
+        RigidBody rB;
+        if (B instanceof RigidBody)
+            rB = (RigidBody) B;
+        else
+            rB = null;
 
         float rotA = (rA == null) ? 0f : rA.getRotation();
         float rotB = (rB == null) ? 0f : rB.getRotation();

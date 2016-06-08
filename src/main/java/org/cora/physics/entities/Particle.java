@@ -7,7 +7,9 @@ import org.cora.maths.sRectangle;
 import org.cora.physics.collision.ContactInformation;
 import org.cora.physics.entities.material.MaterialType;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -385,6 +387,28 @@ public class Particle implements Cloneable
     public void addNoCollisionElementFree(Particle p)
     {
         noCollisionElements.add(p);
+    }
+
+    /**
+     * Remove collision with all elements
+     * @param ps no collision elements
+     */
+    public void addNoCollisionElements(Collection<Particle> ps)
+    {
+        Iterator<Particle> p = ps.iterator();
+        while (p.hasNext())
+        {
+            addNoCollisionElement(p.next());
+        }
+    }
+
+    /**
+     * Remove collision with all elements
+     * @param ps no collision elements
+     */
+    public void addNoCollisionElementsFree(Collection<Particle> ps)
+    {
+        noCollisionElements.addAll(ps);
     }
 
     /**

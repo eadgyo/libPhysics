@@ -1,9 +1,9 @@
 package org.cora.physics.entities.material;
 
+import org.cora.physics.collision.ContactInformation;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.cora.physics.collision.ContactInformation;
 /**
  * Material that define contact behavior
  * Exemple: Collision between wood and glass

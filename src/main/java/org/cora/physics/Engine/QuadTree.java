@@ -62,7 +62,6 @@ public class QuadTree implements Cloneable
         return q;
     }
 
-
     /**
      * Copy an object and change each particle with a given one
      * @param change map

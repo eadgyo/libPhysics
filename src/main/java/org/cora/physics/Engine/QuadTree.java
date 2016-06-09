@@ -215,16 +215,6 @@ public class QuadTree implements Cloneable
                         nodes[index].insert(p);
                     }
                 }
-                /*
-                int i = 0;
-                while (i < particles.size())
-                {
-                    int index = getIndex(particles.get(i).getSavedSRectangleBound());
-                    if (index != -1)
-                        nodes[index].insert(particles.remove(i));
-                    else
-                        i++;
-                }*/
             }
             int index = getIndex(particle.getSavedSRectangleBound());
             if (index != -1)
@@ -244,12 +234,7 @@ public class QuadTree implements Cloneable
         }
     }
 
-    public void retrieve(Particle particle, ArrayList<Particle> resParticles)
-    {
-        retrieve(particle.getSavedSRectangleBound(), resParticles);
-    }
-
-    public void retrieve(Particle particle, Set<Particle> resParticles)
+    public void retrieve(Particle particle, Collection<Particle> resParticles)
     {
         retrieve(particle.getSavedSRectangleBound(), resParticles);
     }
@@ -260,27 +245,17 @@ public class QuadTree implements Cloneable
                 && rec.getY(0) > rect.getY(0) && rec.getY(2) < rect.getY(2);
     }
 
-    public void retrieve(sRectangle rect, ArrayList<Particle> resParticles)
+    public void retrieve(sRectangle rect, Collection<Particle> resParticles)
     {
         int index = getIndex(rect);
         if (index != -1 && nodes[0] != null)
             nodes[index].retrieve(rect, resParticles);
         else
-            addEntities(resParticles);
+            addEntitiesChild(resParticles);
         resParticles.addAll(this.particles);
     }
 
-    public void retrieve(sRectangle rect, Set<Particle> resParticles)
-    {
-        int index = getIndex(rect);
-        if (index != -1 && nodes[0] != null)
-            nodes[index].retrieve(rect, resParticles);
-        else
-            addEntities(resParticles);
-        resParticles.addAll(this.particles);
-    }
-
-    public void addEntities(Set<Particle> resParticles)
+    public void addEntities(Collection<Particle> resParticles)
     {
         resParticles.addAll(particles);
         if (nodes[0] == null)
@@ -291,9 +266,8 @@ public class QuadTree implements Cloneable
         }
     }
 
-    public void addEntities(ArrayList<Particle> resParticles)
+    public void addEntitiesChild(Collection<Particle> resParticles)
     {
-        resParticles.addAll(particles);
         if (nodes[0] == null)
             return;
         for (int i = 0; i < 4; i++)
@@ -347,18 +321,4 @@ public class QuadTree implements Cloneable
     {
         return rect.getMaxY();
     }
-
-    /**
-    public void draw(Graphics g)
-    {
-        g.drawForm(rect);
-
-        if (nodes[0] != null)
-        {
-            for (int i = 0; i < nodes.length; i++)
-            {
-                nodes[i].draw(g);
-            }
-        }
-    }*/
 }

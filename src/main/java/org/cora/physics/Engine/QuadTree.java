@@ -56,7 +56,7 @@ public class QuadTree implements Cloneable
 
         for (int i = 0; i < nodes.length; i++)
         {
-            q.nodes[i] = (QuadTree) q.clone();
+            q.nodes[i] = (QuadTree) nodes[i].clone();
         }
 
         return q;
@@ -94,7 +94,7 @@ public class QuadTree implements Cloneable
         {
             for (int i = 0; i < nodes.length; i++)
             {
-                q.nodes[i] = (QuadTree) q.clone();
+                q.nodes[i] = (QuadTree) nodes[i].clone(change);
             }
         }
 

@@ -21,4 +21,19 @@ public class Gravity extends ForceGenerator
 	
 	p.addForce(gravity.multiply(p.getMass()));
     }
+
+    @Override
+    public Object clone()
+    {
+        Gravity g = null;
+
+        g = (Gravity) super.clone();
+
+        if (g == null)
+            return g;
+
+        g.gravity = (Vector2D) gravity.clone();
+
+        return g;
+    }
 }

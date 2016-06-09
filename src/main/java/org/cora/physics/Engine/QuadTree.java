@@ -5,12 +5,9 @@ import org.cora.maths.Vector2D;
 import org.cora.maths.sRectangle;
 import org.cora.physics.entities.Particle;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
-public class QuadTree
+public class QuadTree implements Cloneable
 {
     private final static int MAX_OBJECTS = 5;
     private final static int MAX_LEVELS = 50;
@@ -37,6 +34,95 @@ public class QuadTree
 
         this.particles = new HashSet<Particle>();
         nodes = new QuadTree[4];
+    }
+
+    @Override
+    public Object clone()
+    {
+        QuadTree q = null;
+
+        try
+        {
+            q = (QuadTree) super.clone();
+        }
+        catch (CloneNotSupportedException e)
+        {
+            e.printStackTrace();
+        }
+
+        q.particles = new HashSet<Particle>(particles);
+        q.rect = (sRectangle) rect.clone();
+        q.nodes = new QuadTree[4];
+
+        for (int i = 0; i < nodes.length; i++)
+        {
+            q.nodes[i] = (QuadTree) q.clone();
+        }
+
+        return q;
+    }
+
+
+    /**
+     * Copy an object and change each particle with a given one
+     * @param change map
+     * @return saved quadTree
+     */
+    public Object clone(Map<Particle, Particle> change)
+    {
+        QuadTree q = null;
+
+        try
+        {
+            q = (QuadTree) super.clone();
+        }
+        catch (CloneNotSupportedException e)
+        {
+            e.printStackTrace();
+        }
+
+        q.particles = new HashSet<Particle>();
+        for (Iterator<Particle> iterator = particles.iterator(); iterator.hasNext(); )
+        {
+            Particle next =  iterator.next();
+            q.particles.add(change.get(next));
+        }
+
+        q.rect = (sRectangle) rect.clone();
+        q.nodes = new QuadTree[4];
+
+        if (nodes[0] != null)
+        {
+            for (int i = 0; i < nodes.length; i++)
+            {
+                q.nodes[i] = (QuadTree) q.clone();
+            }
+        }
+
+        return q;
+    }
+
+    /**
+     * Change particle with given one
+     * @param change map of particles
+     */
+    public void changeParticles(Map<Particle, Particle> change)
+    {
+        Set<Particle> newOne = new HashSet<Particle>();
+        for (Iterator<Particle> iterator = particles.iterator(); iterator.hasNext(); )
+        {
+            Particle next =  iterator.next();
+            newOne.add(change.get(next));
+        }
+
+        particles = newOne;
+        if (nodes[0] != null)
+        {
+            for (int i = 0; i < nodes.length; i++)
+            {
+                nodes[i].changeParticles(change);
+            }
+        }
     }
 
     public void init(sRectangle rect)

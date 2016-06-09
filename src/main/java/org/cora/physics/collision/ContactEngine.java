@@ -13,7 +13,7 @@ import java.util.*;
 /**
  * Engine that handle and resolve objects collisions
  */
-public class ContactEngine
+public class ContactEngine implements Cloneable
 {
     private ArrayList<Particle> elements;
     private ArrayList<Contact>  contacts;
@@ -29,6 +29,93 @@ public class ContactEngine
         quadTree = new QuadTree();
         saveCollision = true;
     }
+
+    @Override
+    public Object clone()
+    {
+        ContactEngine ce = null;
+
+        try
+        {
+            ce = (ContactEngine) super.clone();
+        }
+        catch (CloneNotSupportedException e)
+        {
+            return ce;
+        }
+
+        ce.elements = new ArrayList<>(elements);
+        ce.contacts = new ArrayList<>();
+
+        for (int i = 0; i < contacts.size(); i++)
+        {
+            Contact contact =  contacts.get(i);
+            ce.contacts.add((Contact) contact.clone());
+        }
+
+        ce.quadTree = (QuadTree) quadTree.clone();
+        ce.savedCollisions = new HashMap<Particle, Set<Particle>>();
+
+        savedCollisions.entrySet();
+        for (Iterator<Map.Entry<Particle, Set<Particle>>> iterator = savedCollisions.entrySet().iterator(); iterator.hasNext(); )
+        {
+            Map.Entry<Particle, Set<Particle>> next =  iterator.next();
+            Particle p = next.getKey();
+            Set<Particle> ps = next.getValue();
+            ce.savedCollisions.put(p, new HashSet<>(ps));
+        }
+        return ce;
+    }
+
+    public Object clone(Map<Particle, Particle> change)
+    {
+        ContactEngine ce = null;
+
+        try
+        {
+            ce = (ContactEngine) super.clone();
+        }
+        catch (CloneNotSupportedException e)
+        {
+            return ce;
+        }
+
+        ce.elements = new ArrayList<>();
+        for (int i = 0; i < elements.size(); i++)
+        {
+            Particle particle =  elements.get(i);
+            ce.elements.add(change.get(particle));
+        }
+
+        ce.contacts = new ArrayList<>();
+
+        for (int i = 0; i < contacts.size(); i++)
+        {
+            Contact contact =  contacts.get(i);
+            ce.contacts.add((Contact) contact.clone(change));
+        }
+
+        ce.quadTree = (QuadTree) quadTree.clone(change);
+        ce.savedCollisions = new HashMap<Particle, Set<Particle>>();
+
+        savedCollisions.entrySet();
+        for (Iterator<Map.Entry<Particle, Set<Particle>>> iterator = savedCollisions.entrySet().iterator(); iterator.hasNext(); )
+        {
+            Map.Entry<Particle, Set<Particle>> next =  iterator.next();
+            Particle p = next.getKey();
+            Set<Particle> ps = next.getValue();
+
+            Set<Particle> psC = new HashSet<>();
+            for (Iterator<Particle> particleIterator = ps.iterator(); particleIterator.hasNext(); )
+            {
+                Particle particle =  particleIterator.next();
+                psC.add(change.get(particle));
+            }
+            ce.savedCollisions.put(change.get(p), psC);
+        }
+        return ce;
+    }
+
 
     public void add(Particle p)
     {

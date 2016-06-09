@@ -5,10 +5,12 @@ import org.cora.maths.Vector2D;
 import org.cora.physics.entities.Particle;
 import org.cora.physics.entities.RigidBody;
 
+import java.util.Map;
+
 /**
  * Class holding collision data of two objects
  */
-public class Contact
+public class Contact implements Cloneable
 {
     private Particle A, B;
     private float    coefRestitution;
@@ -56,6 +58,59 @@ public class Contact
         else if (i == 1)
             return B;
         return null;
+    }
+
+    @Override
+    public Object clone()
+    {
+        Contact c = null;
+        try
+        {
+            c = (Contact) super.clone();
+        }
+        catch (CloneNotSupportedException e)
+        {
+            return c;
+        }
+
+        c.contactNormal = (Vector2D) c.contactNormal.clone();
+        c.CA = (Vector2D) CA.clone();
+        c.CB = (Vector2D) CB.clone();
+        c.rP = new Vector2D[rP.length];
+        for (int i = 0; i < rP.length; i++)
+        {
+            Vector2D vector2D = (Vector2D) rP[i].clone();
+            c.rP[i] = vector2D;
+        }
+        c.A = A;
+        c.B = B;
+        return c;
+    }
+
+    public Object clone(Map<Particle, Particle> change)
+    {
+        Contact c = null;
+        try
+        {
+            c = (Contact) super.clone();
+        }
+        catch (CloneNotSupportedException e)
+        {
+            return c;
+        }
+
+        c.contactNormal = (Vector2D) c.contactNormal.clone();
+        c.CA = (Vector2D) CA.clone();
+        c.CB = (Vector2D) CB.clone();
+        c.rP = new Vector2D[rP.length];
+        for (int i = 0; i < rP.length; i++)
+        {
+            Vector2D vector2D = (Vector2D) rP[i].clone();
+            c.rP[i] = vector2D;
+        }
+        c.A = change.get(A);
+        c.B = change.get(B);
+        return c;
     }
 
     public Particle getA()

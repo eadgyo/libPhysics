@@ -11,6 +11,7 @@ import org.cora.physics.force.ForceRegistry;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -18,7 +19,7 @@ import java.util.Set;
  * Force update
  * Contact resolution
  */
-public class Engine
+public class Engine implements Cloneable
 {
     private Set<Particle> elements;
     private ForceRegistry forceRegistry;
@@ -30,6 +31,48 @@ public class Engine
         elements = new HashSet<Particle>();
         forceRegistry = new ForceRegistry();
         contactEngine = new ContactEngine();
+    }
+
+    @Override
+    public Object clone()
+    {
+        Engine engine = null;
+
+        try
+        {
+            super.clone();
+        }
+        catch (CloneNotSupportedException e)
+        {
+
+        }
+        engine.elements = new HashSet<>(this.elements);
+        engine.forceRegistry = (ForceRegistry) forceRegistry.clone();
+        engine.contactEngine = (ContactEngine) contactEngine.clone();
+        return engine;
+    }
+
+    /**
+     * Copy an object and change each particle with a given one
+     * @param change map
+     * @return saved engine
+     */
+    public Object clone(Map<Particle, Particle> change)
+    {
+        Engine engine = null;
+
+        try
+        {
+            super.clone();
+        }
+        catch (CloneNotSupportedException e)
+        {
+
+        }
+        engine.elements = change.keySet();
+        engine.forceRegistry = (ForceRegistry) forceRegistry.clone(change);
+        engine.contactEngine = (ContactEngine) contactEngine.clone(change);
+        return engine;
     }
 
     /**

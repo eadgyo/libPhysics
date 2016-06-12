@@ -142,41 +142,14 @@ public class ContactEngine implements Cloneable
         }
     }
 
+    public void initQT(int x, int y, int width)
+    {
+        quadTree.init(x, y, width, width);
+    }
+
     public void findAndResolveContacts(float dt)
     {
-        float minX = Float.MAX_VALUE;
-        float minY = Float.MAX_VALUE;
-        float maxX = - Float.MAX_VALUE;
-        float maxY = - Float.MAX_VALUE;
-
-        for (int i = 0; i < elements.size(); i++)
-        {
-            elements.get(i).computeStoredBounds();
-            Circle circle = elements.get(i).getSavedCircleBound();
-
-            if (minX > circle.getMinX())
-            {
-                minX = circle.getMinX();
-            }
-
-            if (maxX < circle.getMaxX())
-            {
-                maxX = circle.getMaxX();
-            }
-
-            if (minY > circle.getMinY())
-            {
-                minY = circle.getMinY();
-            }
-
-            if (maxY < circle.getMaxY())
-            {
-                maxY = circle.getMaxY();
-            }
-        }
-
         quadTree.clear();
-        quadTree.init(new sRectangle(minX, minY, maxX - minX, maxY - minY));
         quadTree.inserts(elements);
         contacts.clear();
         savedCollisions.clear();

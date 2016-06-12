@@ -1,5 +1,6 @@
 package org.cora.physics.Engine;
 
+import org.cora.maths.Circle;
 import org.cora.maths.Form;
 import org.cora.maths.sRectangle;
 import org.cora.physics.collision.Contact;
@@ -9,10 +10,7 @@ import org.cora.physics.entities.Particle;
 import org.cora.physics.force.ForceGenerator;
 import org.cora.physics.force.ForceRegistry;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Engine that handle objects physics
@@ -25,6 +23,7 @@ public class Engine implements Cloneable
     private ForceRegistry forceRegistry;
     private ContactEngine contactEngine;
     private float minDt = 0.02f;
+    private sRectangle rectangle;
 
     public Engine()
     {
@@ -50,6 +49,40 @@ public class Engine implements Cloneable
         engine.forceRegistry = (ForceRegistry) forceRegistry.clone();
         engine.contactEngine = (ContactEngine) contactEngine.clone();
         return engine;
+    }
+
+    private void updateBound()
+    {
+        float minX = Float.MAX_VALUE;
+        float minY = Float.MAX_VALUE;
+        float maxX = - Float.MAX_VALUE;
+        float maxY = - Float.MAX_VALUE;
+
+        for (Iterator<Particle> it = elements.iterator(); it.hasNext(); )
+        {
+            Particle p = it.next();
+            Circle circle = p.getCircleBound();
+
+            if (minX > circle.getMinX())
+            {
+                minX = circle.getMinX();
+            }
+
+            if (maxX < circle.getMaxX())
+            {
+                maxX = circle.getMaxX();
+            }
+
+            if (minY > circle.getMinY())
+            {
+                minY = circle.getMinY();
+            }
+
+            if (maxY < circle.getMaxY())
+            {
+                maxY = circle.getMaxY();
+            }
+        }
     }
 
     /**
